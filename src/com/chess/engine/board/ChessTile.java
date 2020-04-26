@@ -12,7 +12,7 @@ public abstract class ChessTile{
     // Holding all empty tiles in the Map.
     private static final Map<Integer, emptyTile> EMPTY_TILES = createAllEmptyTiles();
 
-    // Generates all possible tiles on an 8x8 chess board (64 tiles total).
+    // createAllEmptyTiles() generates all possible tiles on an 8x8 chess board (64 tiles total).
     private static Map<Integer, emptyTile> createAllEmptyTiles() {
         final Map<Integer, emptyTile> emptyTileMap = new HashMap<>();
         final int TOTAL_TILES = 64; // number of total tiles possible
@@ -22,6 +22,8 @@ public abstract class ChessTile{
         return ImmutableMap.copyOf(emptyTileMap);
     }
 
+    // createTile(coordinates, piece) creates a new chess board tile with the given coordinates and chess piece
+    //  (or null for empty tile).
     public static ChessTile createTile(final int coordinates, final ChessPiece piece) {
         // if there is no piece on the tile to create, the return an empty tile with the coordinates:
         if (piece == null) {

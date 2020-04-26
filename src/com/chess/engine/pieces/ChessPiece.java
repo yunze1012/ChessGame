@@ -1,10 +1,23 @@
 package com.chess.engine.pieces;
-public class ChessPiece {
-    protected final int piecePosition;
-    protected final Alliance pieceAlliance;
 
-    public ChessPiece(final int posn, final Alliance alliance) {
+import com.chess.engine.Team;
+import com.chess.engine.board.ChessBoard;
+import com.chess.engine.board.Move;
+
+import java.util.List;
+
+public abstract class ChessPiece {
+    protected final int piecePosition;
+    protected final Team pieceTeam;
+
+    public ChessPiece(final int posn, final Team team) {
         this.piecePosition = posn;
-        this.pieceAlliance = alliance;
+        this.pieceTeam = team;
     }
+    // getPieceTeam() returns the team the current piece is with (BLACK or WHITE).
+    public Team getPieceTeam() {
+        return this.pieceTeam;
+    }
+    // allowedMoves(board) calculates the allowed moves on the given parameter ChessBoard for the current ChessPiece.
+    public abstract List<Move> allowedMoves(final ChessBoard board);
 }
