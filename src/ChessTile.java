@@ -2,7 +2,7 @@ public abstract class ChessTile{
     int tileCoordinates; // the current tile coordinates on the chess board
 
     public ChessTile(int coordinates) {
-        this.coordinates = tileCoordinates;
+        this.tileCoordinates = coordinates;
     }
     // isTileOccupied() checks if the current tile is occupied by a chess piece.
     public abstract boolean isTileOccupied();
@@ -20,9 +20,8 @@ public abstract class ChessTile{
         public boolean isTileOccupied() {
             return false;
         }
-
-        @Override
         // There is no piece on an empty tile to return.
+        @Override
         public ChessPiece getPiece() {
             return null;
         }
