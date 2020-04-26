@@ -9,12 +9,13 @@ import java.util.Map;
 public abstract class ChessTile{
     protected final int tileCoordinates; // the current tile coordinates on the chess board
 
+    // Holding all empty tiles in the Map.
     private static final Map<Integer, emptyTile> EMPTY_TILES = createAllEmptyTiles();
 
     // Generates all possible tiles on an 8x8 chess board (64 tiles total).
     private static Map<Integer, emptyTile> createAllEmptyTiles() {
         final Map<Integer, emptyTile> emptyTileMap = new HashMap<>();
-        final int TOTAL_TILES = 64;
+        final int TOTAL_TILES = 64; // number of total tiles possible
         for (int i = 0; i < TOTAL_TILES; i++) {
             emptyTileMap.put(i, new emptyTile(i));
         }
@@ -22,9 +23,11 @@ public abstract class ChessTile{
     }
 
     public static ChessTile createTile(final int coordinates, final ChessPiece piece) {
+        // if there is no piece on the tile to create, the return an empty tile with the coordinates:
         if (piece == null) {
             return EMPTY_TILES.get(coordinates);
         }
+        // otherwise, return an occupied tile with the exact chess piece at the coordinates:
         return new occupiedTile(coordinates, piece);
     }
 
@@ -39,7 +42,7 @@ public abstract class ChessTile{
     // Subclass provides the property of an empty tile to the class ChessTile.
     public static final class emptyTile extends ChessTile{
 
-        public emptyTile(final int coordinate) {
+        private emptyTile(final int coordinate) {
             super(coordinate);
         }
 
@@ -57,7 +60,7 @@ public abstract class ChessTile{
     // Subclass provides the property of an occupied tile to the class ChessTile.
     public static final class occupiedTile extends ChessTile{
         private final ChessPiece currentPiece; // ChessPiece on the current tile.
-        public occupiedTile(int coordinate, ChessPiece curPiece) {
+        private occupiedTile(int coordinate, ChessPiece curPiece) {
             super(coordinate);
             this.currentPiece = curPiece;
         }
