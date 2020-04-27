@@ -1,13 +1,14 @@
 package com.chess.engine.pieces;
 
 import com.chess.engine.Team;
+import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.ChessBoard;
 import com.chess.engine.board.ChessTile;
 import com.chess.engine.board.Move;
 import com.google.common.collect.ImmutableList;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Knight extends ChessPiece{
@@ -18,14 +19,25 @@ public class Knight extends ChessPiece{
         super(posn, team);
     }
 
-    // for function purpose, see ChessPiece class file.
+    // for general function purpose, see ChessPiece class file.
+    // this override is limited to the Knight chess piece.
     @Override
-    public List<Move> allowedMoves(ChessBoard board) {
-        int realCoordinate; // actual potential move coordinate of the current Knight on the chess board.
+    public Collection<Move> allowedMoves(ChessBoard board) {
         final List<Move> legalMoves = new ArrayList<>();
         for (final int curCoordinate : POSSIBLE_MOVE_REL_CRD) {
-            realCoordinate = this.piecePosition + curCoordinate; // get the real coordinate of the potential move
-            if (true /*it is a valid tile coordinate*/) {
+            // actual potential move coordinate of the current Knight on the chess board:
+            int realCoordinate = this.piecePosition + curCoordinate;
+            // if the current move coordinate is a valid coordinate on the chess board:
+            if (BoardUtils.isValidTileCoordinate(realCoordinate)) {
+                // EXCEPTION CASE: If the Knight is on the first, second, seventh, or last column, then the following
+                //  rules will not apply to it. We need then different rules.
+                if (isOnFirstColumnInvalid(this.piecePosition, curCoordinate) ||
+                        isOnSecondColumnInvalid(this.piecePosition, curCoordinate) ||
+                        isOnSeventhColumnInvalid(this.piecePosition, curCoordinate) ||
+                        isOnLastColumnInvalid(this.piecePosition, curCoordinate)) {
+                    continue;
+                }
+
                 final ChessTile possibleDestinationTile = board.getTile(realCoordinate);
                 // if the current targeted potential move destination tile is not occupied:
                 if (!possibleDestinationTile.isTileOccupied()) {
@@ -43,4 +55,29 @@ public class Knight extends ChessPiece{
         }
         return ImmutableList.copyOf(legalMoves);
     }
+
+    // isOnFirstColumnValid(curPosition, movePosition) checks if the parameter current position is on the first column
+    //  of the chess board and if the parameter movement position is invalid because of the first column.
+    private static boolean isOnFirstColumnInvalid(final int curPosition, final int movePosition) {
+        return BoardUtils.FIRST_COLUMN[curPosition] && ((movePosition == -17) || (movePosition == -10) ||
+                (movePosition == 6) || (movePosition == 15));
+    }
+
+    // isOnSecondColumnValid(curPosition, movePosition) checks if the parameter current position is on the second column
+    //  of the chess board and if the parameter movement position is invalid because of the second column.
+    private static boolean isOnSecondColumnInvalid(final int curPosition, final int movePosition) {
+        return BoardUtils.SECOND_COLUMN[curPosition] && ((movePosition == -10) || (movePosition == 6));
+    }
+
+    // isOnSeventhColumnValid(curPosition, movePosition) checks if the parameter current position is on the seventh column
+    //  of the chess board and if the parameter movement position is invalid because of the seventh column.
+    private static boolean isOnSeventhColumnInvalid(final int curPosition, final int movePosition) {
+        return BoardUtils.SEVENTH_COLUMN[curPosition] && ((movePosition == -6) || (movePosition == 10));
+    }
+
+    private static boolean isOnLastColumnInvalid(final int curPosition, final int movePosition) {
+        return BoardUtils.LAST_COLUMN[curPosition] && ((movePosition == -15) || (movePosition == -6) ||
+                (movePosition == 10) || (curPosition == 17));
+    }
+
 }

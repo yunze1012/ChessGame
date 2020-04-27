@@ -4,7 +4,7 @@ import com.chess.engine.Team;
 import com.chess.engine.board.ChessBoard;
 import com.chess.engine.board.Move;
 
-import java.util.List;
+import java.util.Collection;
 
 public abstract class ChessPiece {
     protected final int piecePosition;
@@ -19,5 +19,5 @@ public abstract class ChessPiece {
         return this.pieceTeam;
     }
     // allowedMoves(board) calculates the allowed moves on the given parameter ChessBoard for the current ChessPiece.
-    public abstract List<Move> allowedMoves(final ChessBoard board);
+    public abstract Collection<Move> allowedMoves(final ChessBoard board);
 }
