@@ -33,7 +33,7 @@ public abstract class ChessTile{
         return new occupiedTile(coordinates, piece);
     }
 
-    private ChessTile(int coordinates) {
+    private ChessTile(final int coordinates) {
         this.tileCoordinates = coordinates;
     }
     // isTileOccupied() checks if the current tile is occupied by a chess piece.
@@ -62,7 +62,7 @@ public abstract class ChessTile{
     // Subclass provides the property of an occupied tile to the class ChessTile.
     public static final class occupiedTile extends ChessTile{
         private final ChessPiece currentPiece; // ChessPiece on the current tile.
-        private occupiedTile(int coordinate, ChessPiece curPiece) {
+        private occupiedTile(int coordinate, final ChessPiece curPiece) {
             super(coordinate);
             this.currentPiece = curPiece;
         }
