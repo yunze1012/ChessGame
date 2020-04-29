@@ -26,4 +26,8 @@ public abstract class ChessPiece {
     }
     // allowedMoves(board) calculates the allowed moves on the given parameter ChessBoard for the current ChessPiece.
     public abstract Collection<Move> allowedMoves(final ChessBoard board);
+    // getPosition() returns the current piece coordinate on the chess board (index).
+    public int getPiecePosition() {
+        return this.piecePosition;
+    }
 }
