@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Rook extends ChessPiece{
-    // all possible move coordinate adjustments relative to the current Bishop piece coordinate on the chess board:
+    // all possible move coordinate adjustments relative to the current Rook piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-8, -1, 1, 8};
 
     public Rook(int posn, Team team) {

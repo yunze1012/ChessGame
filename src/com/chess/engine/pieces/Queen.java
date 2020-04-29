@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Queen extends ChessPiece{
-    // all possible move coordinate adjustments relative to the current Bishop piece coordinate on the chess board:
+    // all possible move coordinate adjustments relative to the current Queen piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     public Queen(int posn, Team team) {
