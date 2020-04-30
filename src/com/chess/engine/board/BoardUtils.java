@@ -10,9 +10,8 @@ public class BoardUtils {
     public static final boolean[] LAST_COLUMN = createColumn(7);
     // Index holds true if the corresponding tile index of the board falls on the corresponding rows of the board.
     //  Otherwise, index holds false:
-    // INCOMPLETE
-    public static final boolean[] SECOND_ROW = null;
-    public static final boolean[] SEVENTH_ROW = null;
+    public static final boolean[] SECOND_ROW = createRow(8);
+    public static final boolean[] SEVENTH_ROW = createRow(48);
 
     private BoardUtils() {
         throw new RuntimeException("Not Instantiatable!");
@@ -23,14 +22,25 @@ public class BoardUtils {
         return coordinate >= 0 && coordinate <= 63;
     }
 
-    // createColumn(columnNum) sets a specified column number and all tiles in that column are all set to true, the rest of
-    //  tiles are all false.
+    // createColumn(columnNum) sets a specified column number and all tiles in that column are all set to true, the rest
+    //  of tiles are all false.
     private static boolean[] createColumn(int column) {
         final boolean[] board = new boolean[TOTAL_TILES];
         do {
             board[column] = true;
             column += 8; // change to next tile in the column
         } while(column < TOTAL_TILES);
+        return board;
+    }
+
+    // createRow(rowIndex) sets a specific starting index of a row in the chess board and all tiles in that row are all
+    //  set to true, the rest of tiles are all false.
+    private static boolean[] createRow(int rowIndex) {
+        final boolean[] board = new boolean[TOTAL_TILES];
+        do {
+            board[rowIndex] = true;
+            rowIndex ++;
+        } while(rowIndex % 8 != 0); // while still on this row
         return board;
     }
 }

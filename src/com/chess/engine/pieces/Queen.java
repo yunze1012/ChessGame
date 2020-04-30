@@ -15,7 +15,7 @@ public class Queen extends ChessPiece{
     // all possible move coordinate adjustments relative to the current Queen piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-9, -8, -7, -1, 1, 7, 8, 9};
 
-    public Queen(int posn, Team team) {
+    public Queen(final int posn, final Team team) {
         super(posn, team);
     }
 
@@ -65,5 +65,11 @@ public class Queen extends ChessPiece{
     private static boolean isOnLastColumnInvalid (final int curPosition, final int movePosition) {
         return BoardUtils.LAST_COLUMN[curPosition] && ((movePosition == -7) || (movePosition == 9) ||
                 (movePosition == 1));
+    }
+
+    // toString() returns the type of the current piece.
+    @Override
+    public String toString() {
+        return pieceType.QUEEN.toString();
     }
 }

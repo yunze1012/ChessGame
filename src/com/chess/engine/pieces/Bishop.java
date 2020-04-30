@@ -17,7 +17,7 @@ public class Bishop extends ChessPiece {
     // all possible move coordinate adjustments relative to the current Bishop piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-9, -7, 7, 9};
 
-    public Bishop (int posn, Team team) {
+    public Bishop (final int posn, final Team team) {
         super(posn, team);
     }
 
@@ -65,5 +65,11 @@ public class Bishop extends ChessPiece {
     //  of the chess board and if the parameter movement position is invalid because of the last column.
     private static boolean isOnLastColumnInvalid (final int curPosition, final int movePosition) {
         return BoardUtils.LAST_COLUMN[curPosition] && ((movePosition == -7) || (movePosition == 9));
+    }
+
+    // toString() returns the type of the current piece.
+    @Override
+    public String toString() {
+        return pieceType.BISHOP.toString();
     }
 }

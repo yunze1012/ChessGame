@@ -57,6 +57,11 @@ public abstract class ChessTile{
         public ChessPiece getPiece() {
             return null;
         }
+        // TILE PRINTING PURPOSE:
+        @Override
+        public String toString() {
+            return "-";
+        }
     }
 
     // Subclass provides the property of an occupied tile to the class ChessTile.
@@ -75,6 +80,14 @@ public abstract class ChessTile{
         @Override
         public ChessPiece getPiece() {
             return this.currentPiece;
+        }
+        // TILE PRINTING PURPOSE:
+        @Override
+        public String toString() {
+            if (getPiece().getPieceTeam().isBlack()) {
+                return getPiece().toString().toLowerCase();
+            }
+            return getPiece().toString();
         }
     }
 }

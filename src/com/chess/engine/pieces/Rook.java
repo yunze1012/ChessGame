@@ -15,7 +15,7 @@ public class Rook extends ChessPiece{
     // all possible move coordinate adjustments relative to the current Rook piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-8, -1, 1, 8};
 
-    public Rook(int posn, Team team) {
+    public Rook(final int posn, final Team team) {
         super(posn, team);
     }
 
@@ -63,5 +63,11 @@ public class Rook extends ChessPiece{
     //  of the chess board and if the parameter movement position is invalid because of the last column.
     private static boolean isOnLastColumnInvalid (final int curPosition, final int movePosition) {
         return BoardUtils.LAST_COLUMN[curPosition] && (movePosition == 1);
+    }
+
+    // toString() returns the type of the current piece.
+    @Override
+    public String toString() {
+        return pieceType.ROOK.toString();
     }
 }

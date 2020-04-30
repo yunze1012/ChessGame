@@ -30,4 +30,23 @@ public abstract class ChessPiece {
     public int getPiecePosition() {
         return this.piecePosition;
     }
+    // All the types of chess piece:
+    public enum pieceType {
+        PAWN("P"),
+        KNIGHT("N"),
+        BISHOP("B"),
+        ROOK("R"),
+        QUEEN("Q"),
+        KING("K");
+
+        private String pieceName;
+        pieceType (final String pieceName) {
+            this.pieceName = pieceName;
+        }
+        // printing piece type:
+        @Override
+        public String toString() {
+            return this.pieceName;
+        }
+    }
 }

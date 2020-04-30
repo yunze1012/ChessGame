@@ -84,4 +84,9 @@ public class Knight extends ChessPiece{
                 (movePosition == 10) || (curPosition == 17));
     }
 
+    // toString() returns the type of the current piece.
+    @Override
+    public String toString() {
+        return pieceType.KNIGHT.toString();
+    }
 }
