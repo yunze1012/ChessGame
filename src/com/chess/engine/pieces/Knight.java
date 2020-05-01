@@ -18,7 +18,7 @@ public class Knight extends ChessPiece{
     private final static int[] POSSIBLE_MOVE_REL_CRD= {-17, -15, -10, -6, 6, 10, 15, 17};
 
     public Knight(final int posn, final Team team) {
-        super(posn, team);
+        super(pieceType.KNIGHT, posn, team);
     }
 
     // for general function purpose, see ChessPiece class file.

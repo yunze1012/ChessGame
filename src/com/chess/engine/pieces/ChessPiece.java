@@ -10,11 +10,13 @@ public abstract class ChessPiece {
     protected final int piecePosition;
     protected final Team pieceTeam;
     protected final boolean isFirstMove;
+    protected final pieceType typeOfPiece;
 
-    public ChessPiece(final int posn, final Team team) {
+    public ChessPiece(final pieceType typeOfPiece, final int posn, final Team team) {
         this.piecePosition = posn;
         this.pieceTeam = team;
         this.isFirstMove = false; // TO COMPLETE
+        this.typeOfPiece = typeOfPiece;
     }
     // ifFirstMove() checks if it is this chess piece's first move on the chess board.
     public boolean isFirstMove() {
@@ -32,12 +34,42 @@ public abstract class ChessPiece {
     }
     // All the types of chess piece:
     public enum pieceType {
-        PAWN("P"),
-        KNIGHT("N"),
-        BISHOP("B"),
-        ROOK("R"),
-        QUEEN("Q"),
-        KING("K");
+        PAWN("P"){
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        KNIGHT("N") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        BISHOP("B") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        ROOK("R") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        QUEEN("Q") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        KING("K") {
+            @Override
+            public boolean isKing() {
+                return true;
+            }
+        };
 
         private String pieceName;
         pieceType (final String pieceName) {
@@ -48,5 +80,12 @@ public abstract class ChessPiece {
         public String toString() {
             return this.pieceName;
         }
+        // isKing() checks if the current chess piece is a King.
+        public abstract boolean isKing();
+    }
+
+    // getPieceType() returns the type of the current chess piece.
+    public pieceType getPieceType() {
+        return this.typeOfPiece;
     }
 }

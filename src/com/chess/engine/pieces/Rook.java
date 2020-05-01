@@ -16,7 +16,7 @@ public class Rook extends ChessPiece{
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-8, -1, 1, 8};
 
     public Rook(final int posn, final Team team) {
-        super(posn, team);
+        super(pieceType.ROOK, posn, team);
     }
 
     // for general function purpose, see ChessPiece class file.

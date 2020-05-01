@@ -2,6 +2,9 @@ package com.chess.engine.board;
 
 import com.chess.engine.Team;
 import com.chess.engine.pieces.*;
+import com.chess.engine.player.BlackPlayer;
+import com.chess.engine.player.Player;
+import com.chess.engine.player.WhitePlayer;
 import com.google.common.collect.ImmutableList;
 
 import java.util.*;
@@ -11,14 +14,17 @@ public class ChessBoard {
     private final Collection<ChessPiece> whitePieces;
     private final Collection<ChessPiece> blackPieces;
     private final static int TOTAL_TILES = 64;
+    private final WhitePlayer whitePlayer;
+    private final BlackPlayer blackPlayer;
 
     private ChessBoard(Builder builder) {
         this.board = createBoard(builder);
         this.whitePieces = onBoardPieces(this.board, Team.WHITE);
         this.blackPieces = onBoardPieces(this.board, Team.BLACK);
-
         final Collection<Move> allWhiteLegalMoves = allLegalMoves(this.whitePieces);
         final Collection<Move> allBlackLegalMoves = allLegalMoves(this.blackPieces);
+        this.whitePlayer = new WhitePlayer(this, allWhiteLegalMoves, allBlackLegalMoves);
+        this.blackPlayer = new BlackPlayer(this, allWhiteLegalMoves, allBlackLegalMoves);
     }
     // toString() is for debug printing purpose:
     @Override
@@ -142,5 +148,21 @@ public class ChessBoard {
     // getTile() returns the ChessTile at the given coordinate on the current ChessBoard.
     public ChessTile getTile(final int coordinate) {
         return board.get(coordinate);
+    }
+    // getBlackPieces() returns the collection of all the black pieces currently on the board.
+    public Collection<ChessPiece> getBlackPieces() {
+        return this.blackPieces;
+    }
+    // getWhitePieces() returns the collection of all the white pieces currently on the board.
+    public Collection<ChessPiece> getWhitePieces() {
+        return this.whitePieces;
+    }
+    // getWhitePlayer() returns the white player in the chess game.
+    public Player getWhitePlayer() {
+        return this.whitePlayer;
+    }
+    // getBlackPlayer() returns the black player in the chess game.
+    public Player getBlackPlayer() {
+        return this.blackPlayer;
     }
 }

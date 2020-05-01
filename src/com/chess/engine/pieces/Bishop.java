@@ -18,7 +18,7 @@ public class Bishop extends ChessPiece {
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-9, -7, 7, 9};
 
     public Bishop (final int posn, final Team team) {
-        super(posn, team);
+        super(pieceType.BISHOP, posn, team);
     }
 
     // for general function purpose, see ChessPiece class file.

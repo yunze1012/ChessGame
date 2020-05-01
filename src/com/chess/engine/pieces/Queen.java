@@ -16,7 +16,7 @@ public class Queen extends ChessPiece{
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     public Queen(final int posn, final Team team) {
-        super(posn, team);
+        super(pieceType.QUEEN, posn, team);
     }
 
     // for general function purpose, see ChessPiece class file.

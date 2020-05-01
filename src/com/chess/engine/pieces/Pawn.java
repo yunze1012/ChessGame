@@ -18,7 +18,7 @@ public class Pawn extends ChessPiece{
     private final static int[] POSSIBLE_MOVE_REL_CRD= {7, 8, 9, 16};
 
     public Pawn(final int posn, final Team team) {
-        super(posn, team);
+        super(pieceType.PAWN, posn, team);
     }
 
     // for general function purpose, see ChessPiece class file.
