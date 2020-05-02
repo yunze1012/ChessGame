@@ -13,4 +13,9 @@ public class MoveUpdate {
         this.move = move;
         this.moveStatus = moveStatus;
     }
+
+    // getMoveStatus() returns the current move status.
+    public MoveStatus getMoveStatus() {
+        return this.moveStatus;
+    }
 }

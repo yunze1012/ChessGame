@@ -16,6 +16,7 @@ public class ChessBoard {
     private final static int TOTAL_TILES = 64;
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
+    private final Player currentMovingPlayer;
 
     private ChessBoard(Builder builder) {
         this.board = createBoard(builder);
@@ -25,6 +26,7 @@ public class ChessBoard {
         final Collection<Move> allBlackLegalMoves = allLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, allWhiteLegalMoves, allBlackLegalMoves);
         this.blackPlayer = new BlackPlayer(this, allWhiteLegalMoves, allBlackLegalMoves);
+        this.currentMovingPlayer = null;
     }
     // toString() is for debug printing purpose:
     @Override
@@ -164,5 +166,9 @@ public class ChessBoard {
     // getBlackPlayer() returns the black player in the chess game.
     public Player getBlackPlayer() {
         return this.blackPlayer;
+    }
+    // getCurrentMovingPlayer() returns the current moving player.
+    public Player getCurrentMovingPlayer() {
+        return this.currentMovingPlayer;
     }
 }
