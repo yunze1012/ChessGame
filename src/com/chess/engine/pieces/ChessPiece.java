@@ -11,12 +11,23 @@ public abstract class ChessPiece {
     protected final Team pieceTeam;
     protected final boolean isFirstMove;
     protected final pieceType typeOfPiece;
+    private final int pieceHashCode;
 
     public ChessPiece(final pieceType typeOfPiece, final int posn, final Team team) {
         this.piecePosition = posn;
         this.pieceTeam = team;
         this.isFirstMove = false; // TO COMPLETE
         this.typeOfPiece = typeOfPiece;
+        this.pieceHashCode = calculateHashCode();
+    }
+
+    // calculateHashCode() calculates the Hash Code of the current ChessPiece.
+    private int calculateHashCode() {
+        int result = typeOfPiece.hashCode();
+        result = 31 * result + pieceTeam.hashCode();
+        result = 31 * result + piecePosition;
+        result = 31 * result + (isFirstMove ? 1 : 0);
+        return result;
     }
     // ifFirstMove() checks if it is this chess piece's first move on the chess board.
     public boolean isFirstMove() {
@@ -32,6 +43,9 @@ public abstract class ChessPiece {
     public int getPiecePosition() {
         return this.piecePosition;
     }
+    // movePiece() returns a new ChessPiece with the move applied on the current chess piece:
+    public abstract ChessPiece movePiece(Move move);
+
     // All the types of chess piece:
     public enum pieceType {
         PAWN("P"){
@@ -87,5 +101,24 @@ public abstract class ChessPiece {
     // getPieceType() returns the type of the current chess piece.
     public pieceType getPieceType() {
         return this.typeOfPiece;
+    }
+
+    @Override
+    public boolean equals(final Object compared) {
+        if (this == compared) {
+            return true;
+        }
+        // if the compared object is not a chess piece, then it is surely false:
+        if (!(compared instanceof ChessPiece)) {
+            return false;
+        }
+        final ChessPiece comparedPiece = (ChessPiece) compared;
+        // checks if all the fields matches:
+        return piecePosition == comparedPiece.getPiecePosition() && typeOfPiece == comparedPiece.getPieceType() &&
+                pieceTeam == comparedPiece.getPieceTeam() && isFirstMove == comparedPiece.isFirstMove();
+    }
+    @Override
+    public int hashCode() {
+        return this.pieceHashCode;
     }
 }

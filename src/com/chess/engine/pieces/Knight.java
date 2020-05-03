@@ -89,4 +89,10 @@ public class Knight extends ChessPiece{
     public String toString() {
         return pieceType.KNIGHT.toString();
     }
+
+    // for general function purpose, see ChessPiece class file.
+    @Override
+    public Knight movePiece(final Move move) {
+        return new Knight(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+    }
 }

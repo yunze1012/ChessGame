@@ -69,4 +69,10 @@ public class King extends ChessPiece{
     public String toString() {
         return pieceType.KING.toString();
     }
+
+    // for general function purpose, see ChessPiece class file.
+    @Override
+    public King movePiece(final Move move) {
+        return new King(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+    }
 }

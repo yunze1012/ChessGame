@@ -70,4 +70,10 @@ public class Rook extends ChessPiece{
     public String toString() {
         return pieceType.ROOK.toString();
     }
+
+    // for general function purpose, see ChessPiece class file.
+    @Override
+    public Rook movePiece(final Move move) {
+        return new Rook(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+    }
 }

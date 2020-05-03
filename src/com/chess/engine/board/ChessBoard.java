@@ -18,7 +18,7 @@ public class ChessBoard {
     private final BlackPlayer blackPlayer;
     private final Player currentMovingPlayer;
 
-    private ChessBoard(Builder builder) {
+    private ChessBoard(final Builder builder) {
         this.board = createBoard(builder);
         this.whitePieces = onBoardPieces(this.board, Team.WHITE);
         this.blackPieces = onBoardPieces(this.board, Team.BLACK);
@@ -26,7 +26,7 @@ public class ChessBoard {
         final Collection<Move> allBlackLegalMoves = allLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, allWhiteLegalMoves, allBlackLegalMoves);
         this.blackPlayer = new BlackPlayer(this, allWhiteLegalMoves, allBlackLegalMoves);
-        this.currentMovingPlayer = null;
+        this.currentMovingPlayer = builder.nextMover.selectPlayer(this.whitePlayer, this.blackPlayer);
     }
     // toString() is for debug printing purpose:
     @Override

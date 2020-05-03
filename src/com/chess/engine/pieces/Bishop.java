@@ -72,4 +72,10 @@ public class Bishop extends ChessPiece {
     public String toString() {
         return pieceType.BISHOP.toString();
     }
+
+    // for general function purpose, see ChessPiece class file.
+    @Override
+    public Bishop movePiece(final Move move) {
+        return new Bishop(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+    }
 }

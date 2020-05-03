@@ -90,4 +90,10 @@ public class Pawn extends ChessPiece{
     public String toString() {
         return pieceType.PAWN.toString();
     }
+
+    // for general function purpose, see ChessPiece class file.
+    @Override
+    public Pawn movePiece(final Move move) {
+        return new Pawn(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+    }
 }

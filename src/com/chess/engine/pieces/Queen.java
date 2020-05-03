@@ -72,4 +72,10 @@ public class Queen extends ChessPiece{
     public String toString() {
         return pieceType.QUEEN.toString();
     }
+
+    // for general function purpose, see ChessPiece class file.
+    @Override
+    public Queen movePiece(final Move move) {
+        return new Queen(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+    }
 }
