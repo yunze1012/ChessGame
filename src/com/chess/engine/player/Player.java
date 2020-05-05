@@ -26,7 +26,7 @@ public abstract class Player {
     }
 
     // attackOnTile() returns all the possible attack moves on the selected tile.
-    private static Collection<Move> attackOnTile(int piecePosition, Collection<Move> moves) {
+    protected static Collection<Move> attackOnTile(int piecePosition, Collection<Move> moves) {
         final List<Move> attackMoves = new ArrayList<>();
         // checks all moves in the collection, and if there is a move in which its destination has the same tile
         //  coordinate (tile index number) as the piece's position (piece coordinate index), then the move is attacking
@@ -122,4 +122,7 @@ public abstract class Player {
         //  the current ChessBoard:
         return new MoveUpdate(updateBoard, move, MoveStatus.COMPLETED);
     }
+
+    // calculateCastlingMoves() calculates all the castling moves available for the current player on the board.
+    protected abstract Collection<Move> calculateCastlingMoves(Collection<Move> legalMoves, Collection<Move> opponentLegalMoves);
 }

@@ -53,10 +53,20 @@ public abstract class ChessPiece {
             public boolean isKing() {
                 return false;
             }
+
+            @Override
+            public boolean isRook() {
+                return false;
+            }
         },
         KNIGHT("N") {
             @Override
             public boolean isKing() {
+                return false;
+            }
+
+            @Override
+            public boolean isRook() {
                 return false;
             }
         },
@@ -65,11 +75,21 @@ public abstract class ChessPiece {
             public boolean isKing() {
                 return false;
             }
+
+            @Override
+            public boolean isRook() {
+                return false;
+            }
         },
         ROOK("R") {
             @Override
             public boolean isKing() {
                 return false;
+            }
+
+            @Override
+            public boolean isRook() {
+                return true;
             }
         },
         QUEEN("Q") {
@@ -77,11 +97,21 @@ public abstract class ChessPiece {
             public boolean isKing() {
                 return false;
             }
+
+            @Override
+            public boolean isRook() {
+                return false;
+            }
         },
         KING("K") {
             @Override
             public boolean isKing() {
                 return true;
+            }
+
+            @Override
+            public boolean isRook() {
+                return false;
             }
         };
 
@@ -96,6 +126,8 @@ public abstract class ChessPiece {
         }
         // isKing() checks if the current chess piece is a King.
         public abstract boolean isKing();
+        // isRook() checks if the current chess piece is a Rook.
+        public abstract boolean isRook();
     }
 
     // getPieceType() returns the type of the current chess piece.

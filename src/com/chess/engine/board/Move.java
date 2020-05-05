@@ -2,6 +2,7 @@ package com.chess.engine.board;
 
 import com.chess.engine.pieces.ChessPiece;
 import com.chess.engine.pieces.Pawn;
+import com.chess.engine.pieces.Rook;
 
 import static com.chess.engine.board.ChessBoard.*;
 
@@ -134,24 +135,73 @@ public abstract class Move {
         }
     }
     // This subclass defines the Castle move.
-    public abstract class castleMove extends Move {
+    static abstract class castleMove extends Move {
+        protected final Rook rook;
+        protected final int rookCurCrd; // current rook coordinate
+        protected final int rookDestCrd; // rook destination coordinate
 
-        public castleMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
+        public castleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
+                          final int rookCurCrd, final int rookDestCrd) {
             super(board, piece, destCrd);
+            this.rook = rook;
+            this.rookCurCrd = rookCurCrd;
+            this.rookDestCrd = rookDestCrd;
+        }
+
+        // getCastleRook() returns the rook that is being castled.
+        public Rook getCastleRook() {
+            return rook;
+        }
+        @Override
+        public boolean isCastlingMove() {
+            return true;
+        }
+        @Override
+        public ChessBoard executeMove() {
+            // same concept as above original function
+            final Builder builder = new Builder();
+            for(final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
+                // NEW: if the piece being checked right now is not the moving piece AND is not the castling Rook.
+                // The "old" Rook is removed from the board and movement will be handled at the bottom part of this function.
+                if(!this.movingPiece.equals(piece) && !this.rook.equals(piece)) {
+                    builder.putPiece(piece);
+                }
+            }
+            for (final ChessPiece piece: this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
+                builder.putPiece(piece);
+            }
+            // The moving of the castling Rook and the King will be handled here:
+            builder.putPiece(this.movingPiece.movePiece(this)); // Moving the king
+            // Creating a new Rook at the destination coordinate:
+            builder.putPiece(new Rook(this.rookDestCrd, this.rook.getPieceTeam()));
+            builder.setMover(this.curBoard.getCurrentMovingPlayer().getOpponent().getTeam());
+            return builder.build();
         }
     }
     // This subclass defines the Castle move on the King side.
-    public static final class kingSideCastleMove extends Move {
+    public static final class kingSideCastleMove extends castleMove {
 
-        public kingSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
-            super(board, piece, destCrd);
+        public kingSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
+                                  final int rookCurCrd, final int rookDestCrd) {
+            super(board, piece, destCrd, rook, rookCurCrd, rookDestCrd);
+        }
+
+        @Override
+        public String toString() {
+            return "O-O"; // convention notation for King side castle
         }
     }
     // This subclass defines the Castle move on the Queen side.
-    public static final class queenSideCastleMove extends Move {
+    public static final class queenSideCastleMove extends castleMove {
 
-        public queenSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
-            super(board, piece, destCrd);
+        public queenSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
+                                   final int rookCurCrd, final int rookDestCrd) {
+            super(board, piece, destCrd, rook, rookCurCrd, rookDestCrd);
+        }
+
+        @Override
+        public String toString() {
+            return "O-O-O"; // convention notation for Queen side castle
         }
     }
     // This subclass defines an invalid move on a chess board.
