@@ -40,6 +40,10 @@ public abstract class ChessTile{
     public abstract boolean isTileOccupied();
     // getPiece() gets the information of the chess piece on the current tile.
     public abstract ChessPiece getPiece();
+    // getTileCoordinates() returns the current tile coordinates.
+    public int getTileCoordinates() {
+        return this.tileCoordinates;
+    }
 
     // Subclass provides the property of an empty tile to the class ChessTile.
     public static final class emptyTile extends ChessTile{

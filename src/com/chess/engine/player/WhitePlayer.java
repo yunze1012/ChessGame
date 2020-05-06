@@ -5,11 +5,14 @@ import com.chess.engine.board.ChessBoard;
 import com.chess.engine.board.ChessTile;
 import com.chess.engine.board.Move;
 import com.chess.engine.pieces.ChessPiece;
+import com.chess.engine.pieces.Rook;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.chess.engine.board.Move.*;
 
 public class WhitePlayer extends Player {
     public WhitePlayer(final ChessBoard board, final Collection<Move> whiteMoves, final Collection<Move> blackMoves) {
@@ -30,7 +33,8 @@ public class WhitePlayer extends Player {
         return this.board.getBlackPlayer();
     }
     @Override
-    protected Collection<Move> calculateCastlingMoves(Collection<Move> legalMoves, Collection<Move> opponentLegalMoves) {
+    protected Collection<Move> calculateCastlingMoves(final Collection<Move> legalMoves,
+                                                      final Collection<Move> opponentLegalMoves) {
         final List<Move> castlingMoves = new ArrayList<>();
         // Condition for a castling move: the player must not be in check and it must be the King's first move.
         if(this.king.isFirstMove() && !this.isCheck()) {
@@ -44,8 +48,10 @@ public class WhitePlayer extends Player {
                     // AND, none of these empty cases is targeted by enemy's pieces.
                     if(Player.attackOnTile(61, opponentLegalMoves).isEmpty() &&
                             Player.attackOnTile(62, opponentLegalMoves).isEmpty()) {
-                        //TODO complete implementation
-                        castlingMoves.add(null);
+                        // adding a new King side castling move with the corresponding destination coordinates for the
+                        //  King and Rook for the white team:
+                        castlingMoves.add(new kingSideCastleMove(this.board, this.king, 62,
+                                (Rook)tileOfRook.getPiece(), tileOfRook.getTileCoordinates(), 61));
                     }
                 }
             }
@@ -57,8 +63,10 @@ public class WhitePlayer extends Player {
                 // The rook must be present at its original place and must also be its first move. (Piece must be a rook)
                 if(tileOfRook.getPiece().getPieceType().isRook() && tileOfRook.isTileOccupied() &&
                         tileOfRook.getPiece().isFirstMove()) {
-                    //TODO complete implementation
-                    castlingMoves.add(null);
+                    // adding a new Queen side castling move with the corresponding destination coordinates for the
+                    //  King and Rook for the white team:
+                    castlingMoves.add(new queenSideCastleMove(this.board, this.king, 58,
+                            (Rook)tileOfRook.getPiece(), tileOfRook.getTileCoordinates(), 59));
                 }
             }
         }

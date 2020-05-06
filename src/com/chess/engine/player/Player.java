@@ -6,6 +6,7 @@ import com.chess.engine.board.Move;
 import com.chess.engine.pieces.ChessPiece;
 import com.chess.engine.pieces.King;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +21,8 @@ public abstract class Player {
     public Player (final ChessBoard board, final Collection<Move> myMoves, final Collection<Move> opponentMoves) {
         this.board = board;
         this.king = setKing();
-        this.legalMoves = myMoves;
+        // Get all our possible normal legal moves and all our possible castling moves:
+        this.legalMoves = ImmutableList.copyOf(Iterables.concat(myMoves, calculateCastlingMoves(myMoves, opponentMoves)));
         // if there is a possible attack on the tile where the King is, then the player is in Check.
         this.isInCheck = !Player.attackOnTile(this.king.getPiecePosition(), opponentMoves).isEmpty();
     }

@@ -1,6 +1,7 @@
-package com.chess.engine;
+package com.chess;
 
 import com.chess.engine.board.ChessBoard;
+import com.chess.gui.Table;
 
 public class GameDrive {
 
@@ -8,5 +9,7 @@ public class GameDrive {
 
         ChessBoard board = ChessBoard.gameInitialize();
         System.out.println(board);
+
+        Table table = new Table();
     }
 }
