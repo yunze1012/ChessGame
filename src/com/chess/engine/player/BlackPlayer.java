@@ -46,7 +46,7 @@ public class BlackPlayer extends Player {
                 // The rook must be present at its original place and must also be its first move. (Piece must be a rook)
                 if(tileOfRook.getPiece().getPieceType().isRook() && tileOfRook.isTileOccupied() &&
                         tileOfRook.getPiece().isFirstMove()) {
-                    // AND, none of these empty cases is targeted by enemy's pieces.
+                    // AND, none of the empty destination cases is targeted by enemy's pieces:
                     if(Player.attackOnTile(5, opponentLegalMoves).isEmpty() &&
                             Player.attackOnTile(6, opponentLegalMoves).isEmpty()) {
                         // adding a new King side castling move with the corresponding destination coordinates for the
@@ -64,10 +64,14 @@ public class BlackPlayer extends Player {
                 // The rook must be present at its original place and must also be its first move. (Piece must be a rook)
                 if(tileOfRook.getPiece().getPieceType().isRook() && tileOfRook.isTileOccupied() &&
                         tileOfRook.getPiece().isFirstMove()) {
-                    // adding a new Queen side castling move with the corresponding destination coordinates for the
-                    //  King and Rook for the white team:
-                    castlingMoves.add(new queenSideCastleMove(this.board, this.king, 2,
-                            (Rook)tileOfRook.getPiece(), tileOfRook.getTileCoordinates(), 3));
+                    // AND, none of the empty destination cases is targeted by enemy's pieces:
+                    if(Player.attackOnTile(2, opponentLegalMoves).isEmpty() &&
+                            Player.attackOnTile(3, opponentLegalMoves).isEmpty()) {
+                        // adding a new Queen side castling move with the corresponding destination coordinates for the
+                        //  King and Rook for the white team:
+                        castlingMoves.add(new queenSideCastleMove(this.board, this.king, 2,
+                                (Rook)tileOfRook.getPiece(), tileOfRook.getTileCoordinates(), 3));
+                    }
                 }
             }
         }

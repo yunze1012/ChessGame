@@ -10,8 +10,14 @@ public class BoardUtils {
     public static final boolean[] LAST_COLUMN = createColumn(7);
     // Index holds true if the corresponding tile index of the board falls on the corresponding rows of the board.
     //  Otherwise, index holds false:
+    public static final boolean[] FIRST_ROW = createRow(0);
     public static final boolean[] SECOND_ROW = createRow(8);
+    public static final boolean[] THIRD_ROW = createRow(16);
+    public static final boolean[] FOURTH_ROW = createRow(24);
+    public static final boolean[] FIFTH_ROW = createRow(32);
+    public static final boolean[] SIXTH_ROW = createRow(40);
     public static final boolean[] SEVENTH_ROW = createRow(48);
+    public static final boolean[] LAST_ROW = createRow(56);
 
     private BoardUtils() {
         throw new RuntimeException("Not Instantiatable!");
