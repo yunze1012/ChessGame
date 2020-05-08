@@ -217,9 +217,9 @@ public abstract class Move {
         }
     }
     // This subclass creates a move.
-    public static class moveCreator {
+    public static class MoveCreator {
 
-        private moveCreator() {
+        private MoveCreator() {
             throw new RuntimeException("Not instantiable");
         }
 
