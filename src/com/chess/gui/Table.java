@@ -6,6 +6,7 @@ import com.chess.engine.board.ChessTile;
 import com.chess.engine.board.Move;
 import com.chess.engine.pieces.ChessPiece;
 import com.chess.engine.player.MoveUpdate;
+import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,6 +19,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -36,11 +39,13 @@ public class Table {
     private ChessTile currentTile;
     private ChessTile destTile;
     private ChessPiece onClickMovedPiece;
+    private BoardOrientation boardOrientation;
 
     public Table() {
         this.mainFrame = new JFrame("Chess");
         this.mainFrame.setLayout(new BorderLayout());
         this.chessBoard = ChessBoard.gameInitialize();
+        this.boardOrientation = BoardOrientation.WHITESIDE;
         final JMenuBar tableMenu = generateOptionsBar();
         this.mainFrame.setJMenuBar(tableMenu);
         this.mainFrame.setSize(MAIN_FRAME_DIMENSION);
@@ -53,20 +58,21 @@ public class Table {
     private JMenuBar generateOptionsBar() {
         final JMenuBar tableMenu = new JMenuBar();
         tableMenu.add(createFileMenu());
+        tableMenu.add(createCustomizeMenu());
         return tableMenu;
     }
     // createFileMenu() creates and returns the File menu option inside the options bar.
     private JMenu createFileMenu() {
         final JMenu fileMenu = new JMenu("File");
-        final JMenuItem openPGN = new JMenuItem("Load PGN File");
-        openPGN.addActionListener(new ActionListener() {
+        final JMenuItem importPGN = new JMenuItem("Import PGN");
+        importPGN.addActionListener(new ActionListener() {
             // TEST PURPOSE:
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Open PGN File");
+                System.out.println("Import PGN File");
             }
         });
-        fileMenu.add(openPGN);
+        fileMenu.add(importPGN);
         final JMenuItem quitGame = new JMenuItem("Quit");
         quitGame.addActionListener(new ActionListener() {
             @Override
@@ -76,6 +82,20 @@ public class Table {
         });
         fileMenu.add(quitGame);
         return fileMenu;
+    }
+    // createPreferencesMenu() creates and returns the Preferences menu option inside the options bar.
+    private JMenu createCustomizeMenu() {
+        final JMenu customizeMenu = new JMenu("Customize");
+        final JMenuItem changeSideMenuItem = new JMenuItem("Change Side");
+        changeSideMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boardOrientation = boardOrientation.flip();
+                boardPanel.displayBoard(chessBoard);
+            }
+        });
+        customizeMenu.add(changeSideMenuItem);
+        return customizeMenu;
     }
 
     // visual component representing the chess board (map to ChessBoard):
@@ -99,7 +119,7 @@ public class Table {
         public void displayBoard(final ChessBoard board) {
             removeAll(); // clear frame first
             // displays each individual chess tiles on the new board (on main frame):
-            for(final ChessTilePanel tile : tiles) {
+            for(final ChessTilePanel tile : boardOrientation.orientedTiles(tiles)) {
                 tile.displayTile(board);
                 add(tile);
             }
@@ -234,7 +254,7 @@ public class Table {
                     final BufferedImage image =
                             ImageIO.read(new File(piecesImagesPath +
                                     board.getTile(this.tileIndex).getPiece().getPieceTeam().toString() +
-                                    board.getTile(this.tileIndex).getPiece().toString() + ".gif"));
+                                    board.getTile(this.tileIndex).getPiece().toString() + ".jpg"));
                     add(new JLabel(new ImageIcon(image)));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -245,8 +265,65 @@ public class Table {
         public void displayTile(final ChessBoard board) {
             assignTileColor(); // paint tile
             assignChessPiece(board); // put pieces on corresponding tiles on the current chess board
+            highlightLegalTiles(board);
             validate();
             repaint();
         }
+        // highlightLegalTiles() highlights the tile panel if the tile is a legal destination for the current piece.
+        private void highlightLegalTiles(final ChessBoard board) {
+            // for each legal move of the current selected piece:
+            for(final Move move : movingPieceLegalMoves(board)) {
+                // if the legal move's destination coordinate is the same as the current tile's coordinate, then
+                //  highlight the current tile panel:
+                if(move.getDestinationCrd() == this.tileIndex) {
+                    try {
+                        add(new JLabel(new ImageIcon(ImageIO.read(new File("images/blue_square.jpg")))));
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        // movingPieceLegalMoves() returns the legal moves for the current moving piece.
+        private Collection<Move> movingPieceLegalMoves(final ChessBoard board) {
+            // if there is a selected piece and the selected piece is part of the current moving player's team:
+            if(onClickMovedPiece != null && onClickMovedPiece.getPieceTeam() == board.getCurrentMovingPlayer().getTeam()) {
+                // return all legal moves
+                return onClickMovedPiece.allowedMoves(board);
+            }
+            // or return nothing
+            return Collections.emptyList();
+        }
+    }
+    // the orientation of the chess board, whether on the white side or the black side
+    public enum BoardOrientation {
+        WHITESIDE {
+            @Override
+            List<ChessTilePanel> orientedTiles(List<ChessTilePanel> tiles) {
+                return tiles;
+            }
+
+            @Override
+            BoardOrientation flip() {
+                return BLACKSIDE;
+            }
+        },
+        BLACKSIDE {
+            @Override
+            List<ChessTilePanel> orientedTiles(List<ChessTilePanel> tiles) {
+                return Lists.reverse(tiles);
+            }
+
+            @Override
+            BoardOrientation flip() {
+                return WHITESIDE;
+            }
+        };
+        // orientedTiles() returns the list of tiles ordered according to the current orientation (whether normal order
+        //  or reversed order).
+        abstract List<ChessTilePanel> orientedTiles(final List<ChessTilePanel> tiles);
+        // flip() returns the flipped orientation of the board.
+        abstract BoardOrientation flip();
+
     }
 }

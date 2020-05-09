@@ -13,10 +13,10 @@ public abstract class ChessPiece {
     protected final pieceType typeOfPiece;
     private final int pieceHashCode;
 
-    public ChessPiece(final pieceType typeOfPiece, final int posn, final Team team) {
+    public ChessPiece(final pieceType typeOfPiece, final int posn, final Team team, final boolean isFirstMove) {
         this.piecePosition = posn;
         this.pieceTeam = team;
-        this.isFirstMove = false; // TO COMPLETE
+        this.isFirstMove = isFirstMove;
         this.typeOfPiece = typeOfPiece;
         this.pieceHashCode = calculateHashCode();
     }

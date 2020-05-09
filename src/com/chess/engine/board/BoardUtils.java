@@ -1,5 +1,7 @@
 package com.chess.engine.board;
 
+import java.util.Map;
+
 public class BoardUtils {
     public static final int TOTAL_TILES = 64;
     // Index holds true if the corresponding tile index of the board falls on the corresponding columns of the board.
@@ -18,6 +20,9 @@ public class BoardUtils {
     public static final boolean[] SIXTH_ROW = createRow(40);
     public static final boolean[] SEVENTH_ROW = createRow(48);
     public static final boolean[] LAST_ROW = createRow(56);
+
+    public static final String[] POSN_NOTATION = createPosnNotations();
+    public static final Map<String, Integer> POSN_TO_CRD = createPosnCrdMap();
 
     private BoardUtils() {
         throw new RuntimeException("Not Instantiatable!");
@@ -49,4 +54,13 @@ public class BoardUtils {
         } while(rowIndex % 8 != 0); // while still on this row
         return board;
     }
+    // getPosnAtCrd(coordinate) returns the corresponding position notation for the given coordinate.
+    public static String getPosnAtCrd(final int coordinate) {
+        return POSN_NOTATION[coordinate];
+    }
+    // getCrdAtPosn(position) returns the corresponding coordinate for the given position notation.
+    public static int getCrdAtPosn(final String position) {
+        return POSN_TO_CRD.get(position);
+    }
+
 }

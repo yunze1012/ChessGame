@@ -16,9 +16,13 @@ import static com.chess.engine.board.Move.*;
 public class Bishop extends ChessPiece {
     // all possible move coordinate adjustments relative to the current Bishop piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-9, -7, 7, 9};
-
+    // constructor when it is the piece's first move:
     public Bishop (final int posn, final Team team) {
-        super(pieceType.BISHOP, posn, team);
+        super(pieceType.BISHOP, posn, team, true);
+    }
+
+    public Bishop (final int posn, final Team team, final boolean isFirstMove) {
+        super(pieceType.BISHOP, posn, team, isFirstMove);
     }
 
     // for general function purpose, see ChessPiece class file.

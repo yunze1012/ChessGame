@@ -14,9 +14,13 @@ import java.util.List;
 public class Rook extends ChessPiece{
     // all possible move coordinate adjustments relative to the current Rook piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-8, -1, 1, 8};
-
+    // constructor when it is the piece's first move:
     public Rook(final int posn, final Team team) {
-        super(pieceType.ROOK, posn, team);
+        super(pieceType.ROOK, posn, team, true);
+    }
+
+    public Rook(final int posn, final Team team, final boolean isFirstMove) {
+        super(pieceType.ROOK, posn, team, isFirstMove);
     }
 
     // for general function purpose, see ChessPiece class file.

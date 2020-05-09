@@ -16,9 +16,13 @@ import static com.chess.engine.board.Move.*;
 public class Knight extends ChessPiece{
     // all possible move coordinate adjustments relative to the current Knight piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD= {-17, -15, -10, -6, 6, 10, 15, 17};
-
+    // constructor when it is the piece's first move:
     public Knight(final int posn, final Team team) {
-        super(pieceType.KNIGHT, posn, team);
+        super(pieceType.KNIGHT, posn, team, true);
+    }
+
+    public Knight(final int posn, final Team team, final boolean isFirstMove) {
+        super(pieceType.KNIGHT, posn, team, isFirstMove);
     }
 
     // for general function purpose, see ChessPiece class file.

@@ -14,9 +14,14 @@ import java.util.List;
 public class Queen extends ChessPiece{
     // all possible move coordinate adjustments relative to the current Queen piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-9, -8, -7, -1, 1, 7, 8, 9};
-
+    // constructor when it is the piece's first move:
     public Queen(final int posn, final Team team) {
-        super(pieceType.QUEEN, posn, team);
+        super(pieceType.QUEEN, posn, team, true);
+    }
+
+    public Queen(final int posn, final Team team, final boolean isFirstMove) {
+        super(pieceType.QUEEN, posn, team, isFirstMove);
+
     }
 
     // for general function purpose, see ChessPiece class file.

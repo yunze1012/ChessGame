@@ -16,9 +16,13 @@ import static com.chess.engine.board.Move.*;
 public class Pawn extends ChessPiece{
     // all possible move coordinate adjustments relative to the current Pawn piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD= {7, 8, 9, 16};
-
+    // constructor when it is the piece's first move:
     public Pawn(final int posn, final Team team) {
-        super(pieceType.PAWN, posn, team);
+        super(pieceType.PAWN, posn, team, true);
+    }
+
+    public Pawn(final int posn, final Team team, final boolean isFirstMove) {
+        super(pieceType.PAWN, posn, team, isFirstMove);
     }
 
     // for general function purpose, see ChessPiece class file.
@@ -47,7 +51,7 @@ public class Pawn extends ChessPiece{
                 // if the front tile AND the destination tile (two tiles in front) are not occupied,
                 //  then it is a valid move:
                 if (!board.getTile(oneFrontTile).isTileOccupied() && !board.getTile(realCoordinate).isTileOccupied()) {
-                    legalMoves.add(new normalMove(board, this, realCoordinate));
+                    legalMoves.add(new pawnDoubleMove(board, this, realCoordinate));
                 }
                 // the following are diagonal attack moves:
                 // if the pawn is attacking right and the pawn is not on the last column if with the white team OR the
@@ -60,8 +64,7 @@ public class Pawn extends ChessPiece{
                         final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
                         //... with an enemy team chess piece, then it is a valid attack move:
                         if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
-                            // TO COMPLETE ATTACK MOVE CONSTRUCTOR:
-                            legalMoves.add(new normalMove(board, this, realCoordinate));
+                            legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
                         }
                     }
                 }
@@ -75,8 +78,7 @@ public class Pawn extends ChessPiece{
                         final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
                         //... with an enemy team chess piece, then it is a valid attack move:
                         if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
-                            // TO COMPLETE ATTACK MOVE CONSTRUCTOR:
-                            legalMoves.add(new normalMove(board, this, realCoordinate));
+                            legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
                         }
                     }
                 }

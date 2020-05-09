@@ -11,11 +11,20 @@ public abstract class Move {
     final ChessPiece movingPiece; // current moving piece
     final int destinationCrd; // coordinate of the destination tile
     public static final Move INVALID_MOVE = new invalidMove();
+    protected final boolean isFirstMove;
 
-    public Move (final ChessBoard board, final ChessPiece piece, final int destCrd) {
+    private Move (final ChessBoard board, final ChessPiece piece, final int destCrd) {
         this.curBoard = board;
         this.movingPiece = piece;
         this.destinationCrd = destCrd;
+        this.isFirstMove = movingPiece.isFirstMove();
+    }
+
+    private Move(final ChessBoard board, final int destinationCrd) {
+        this.curBoard = board;
+        this.destinationCrd = destinationCrd;
+        this.movingPiece = null;
+        this.isFirstMove = false;
     }
 
     // executeMove() returns a new ChessBoard with the current move executed on the old ChessBoard.
@@ -82,6 +91,15 @@ public abstract class Move {
 
         public normalMove (final ChessBoard board, final ChessPiece piece, final int destCrd) {
             super(board, piece, destCrd);
+        }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof normalMove && super.equals(compared);
+        }
+        @Override
+        public String toString() {
+            return movingPiece.getPieceType().toString() + BoardUtils.getPosnAtCrd(this.destinationCrd);
         }
 
     }
@@ -269,6 +287,7 @@ public abstract class Move {
         int result = 1;
         result = 31 * result + this.destinationCrd;
         result = 31 * result + this.movingPiece.hashCode();
+        result = 31 * result + this.movingPiece.getPiecePosition();
         return result;
     }
     @Override
@@ -282,6 +301,7 @@ public abstract class Move {
         final Move comparedMove = (Move) compared;
         // compare if the moving piece is the same and if they move to the same destination:
         return getDestinationCrd() == comparedMove.getDestinationCrd() &&
-                getMovingPiece().equals(comparedMove.getMovingPiece());
+                getMovingPiece().equals(comparedMove.getMovingPiece()) &&
+                getCurrentCrd() == comparedMove.getCurrentCrd();
     }
 }

@@ -14,9 +14,13 @@ import java.util.List;
 public class King extends ChessPiece{
     // all possible move coordinate adjustments relative to the current King piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD= {-9, -8, -7, -1, 1, 7, 8, 9};
-
+    // constructor when it is the piece's first move:
     public King(final int posn, final Team team) {
-        super(pieceType.KING, posn, team);
+        super(pieceType.KING, posn, team, true);
+    }
+
+    public King(final int posn, final Team team, final boolean isFirstMove) {
+        super(pieceType.KING, posn, team, isFirstMove);
     }
 
     // for general function purpose, see ChessPiece class file
