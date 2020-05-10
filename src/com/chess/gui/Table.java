@@ -295,6 +295,39 @@ public class Table {
             return Collections.emptyList();
         }
     }
+    // The class MoveHistory displays all the moves that have been executed before.
+    public static class MoveHistory {
+        private final List<Move> moves;
+
+        MoveHistory() {
+            this.moves = new ArrayList<>();
+        }
+
+        // getMoves() returns the list of moves that has been executed.
+        public List<Move> getMoves() {
+            return this.moves;
+        }
+        // addMove() adds a move to the list of executed moves.
+        public void addMove(final Move move) {
+            this.moves.add(move);
+        }
+        // deleteMove(index) deletes and removes the move at the given index.
+        public Move deleteMove(final int index) {
+            return this.moves.remove(index);
+        }
+        // deleteMove(move) deletes and returns true if the move is part of the list. Otherwise, return false.
+        public boolean deleteMove(final Move move) {
+            return this.moves.remove(move);
+        }
+        // size() returns the size of the list of moves.
+        public int size() {
+            return this.moves.size();
+        }
+        // clear() clears the list of moves.
+        public void clear() {
+            this.moves.clear();
+        }
+    }
     // the orientation of the chess board, whether on the white side or the black side
     public enum BoardOrientation {
         WHITESIDE {

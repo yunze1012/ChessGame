@@ -33,7 +33,6 @@ public abstract class Move {
         // place all the current moving player's pieces on the new board:
         for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
             // if the piece that is being checked right now is not the moving piece, then put it at the same place:
-            //TODO this is incomplete
             if(!this.movingPiece.equals(piece)) {
                 builder.putPiece(piece);
             }
@@ -96,10 +95,6 @@ public abstract class Move {
         @Override
         public boolean equals(final Object compared) {
             return this == compared || compared instanceof normalMove && super.equals(compared);
-        }
-        @Override
-        public String toString() {
-            return movingPiece.getPieceType().toString() + BoardUtils.getPosnAtCrd(this.destinationCrd);
         }
 
     }
@@ -226,7 +221,7 @@ public abstract class Move {
     public static final class invalidMove extends Move {
 
         public invalidMove() {
-            super(null, null, -1);
+            super(null, -1);
         }
 
         @Override

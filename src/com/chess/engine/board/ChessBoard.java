@@ -45,7 +45,7 @@ public class ChessBoard {
 
     // allLegalMoves(teamPieces) returns all the possible legal moves given a collection of chess pieces of a specific
     //  team on the current board.
-    private Collection<Move> allLegalMoves(Collection<ChessPiece> teamPieces) {
+    private Collection<Move> allLegalMoves(final Collection<ChessPiece> teamPieces) {
         final List<Move> legalMoves = new ArrayList<>();
         // adding all legal moves for each individual pieces from the team on the board:
         for (final ChessPiece piece : teamPieces) {

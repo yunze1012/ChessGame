@@ -39,7 +39,7 @@ public class Pawn extends ChessPiece{
             }
             // if the pawn is moving one tile forward, and the tile forward is not occupied:
             if (curCoordinate == 8 && !board.getTile(realCoordinate).isTileOccupied()) {
-                legalMoves.add(new normalMove(board, this, realCoordinate)); // INCOMPLETE CONSTRUCTOR, PROMOTIONS
+                legalMoves.add(new pawnMove(board, this, realCoordinate)); // INCOMPLETE CONSTRUCTOR, PROMOTIONS
             }
             // if the pawn is moving its first move, and the pawn is part of the white team and on the second row OR
             //  part of the back team and on the seventh row, and the pawn is moving two tiles forward:

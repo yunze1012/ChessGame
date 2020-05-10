@@ -43,12 +43,16 @@ public abstract class ChessPiece {
     public int getPiecePosition() {
         return this.piecePosition;
     }
+    // getPiecePoints() returns the points value of the current piece.
+    public int getPiecePoints() {
+        return this.getPieceType().getPiecePoints();
+    }
     // movePiece() returns a new ChessPiece with the move applied on the current chess piece:
     public abstract ChessPiece movePiece(Move move);
 
     // All the types of chess piece:
     public enum pieceType {
-        PAWN("P"){
+        PAWN("P", 100){
             @Override
             public boolean isKing() {
                 return false;
@@ -59,7 +63,7 @@ public abstract class ChessPiece {
                 return false;
             }
         },
-        KNIGHT("N") {
+        KNIGHT("N", 300) {
             @Override
             public boolean isKing() {
                 return false;
@@ -70,7 +74,7 @@ public abstract class ChessPiece {
                 return false;
             }
         },
-        BISHOP("B") {
+        BISHOP("B", 300) {
             @Override
             public boolean isKing() {
                 return false;
@@ -81,7 +85,7 @@ public abstract class ChessPiece {
                 return false;
             }
         },
-        ROOK("R") {
+        ROOK("R", 500) {
             @Override
             public boolean isKing() {
                 return false;
@@ -92,7 +96,7 @@ public abstract class ChessPiece {
                 return true;
             }
         },
-        QUEEN("Q") {
+        QUEEN("Q", 900) {
             @Override
             public boolean isKing() {
                 return false;
@@ -103,7 +107,7 @@ public abstract class ChessPiece {
                 return false;
             }
         },
-        KING("K") {
+        KING("K", 10000) {
             @Override
             public boolean isKing() {
                 return true;
@@ -116,8 +120,11 @@ public abstract class ChessPiece {
         };
 
         private String pieceName;
-        pieceType (final String pieceName) {
+        private int piecePoints;
+
+        pieceType (final String pieceName, final int piecePoints) {
             this.pieceName = pieceName;
+            this.piecePoints = piecePoints;
         }
         // printing piece type:
         @Override
@@ -128,6 +135,10 @@ public abstract class ChessPiece {
         public abstract boolean isKing();
         // isRook() checks if the current chess piece is a Rook.
         public abstract boolean isRook();
+        // getPiecePoints() returns the points value of the current piece type.
+        public int getPiecePoints() {
+            return this.piecePoints;
+        }
     }
 
     // getPieceType() returns the type of the current chess piece.
