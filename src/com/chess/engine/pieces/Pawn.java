@@ -39,7 +39,7 @@ public class Pawn extends ChessPiece{
             }
             // if the pawn is moving one tile forward, and the tile forward is not occupied:
             if (curCoordinate == 8 && !board.getTile(realCoordinate).isTileOccupied()) {
-                legalMoves.add(new pawnMove(board, this, realCoordinate)); // INCOMPLETE CONSTRUCTOR, PROMOTIONS
+                legalMoves.add(new normalMove(board, this, realCoordinate)); // INCOMPLETE CONSTRUCTOR, PROMOTIONS
             }
             // if the pawn is moving its first move, and the pawn is part of the white team and on the second row OR
             //  part of the back team and on the seventh row, and the pawn is moving two tiles forward:
@@ -53,33 +53,33 @@ public class Pawn extends ChessPiece{
                 if (!board.getTile(oneFrontTile).isTileOccupied() && !board.getTile(realCoordinate).isTileOccupied()) {
                     legalMoves.add(new pawnDoubleMove(board, this, realCoordinate));
                 }
-                // the following are diagonal attack moves:
+            }
+            // the following are diagonal attack moves:
                 // if the pawn is attacking right and the pawn is not on the last column if with the white team OR the
                 //  pawn is not on the first column if with the black team:
-                else if (curCoordinate == 7 &&
+            else if (curCoordinate == 7 &&
                         !((BoardUtils.LAST_COLUMN[this.piecePosition] && this.pieceTeam.isWhite()) ||
                                 (BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceTeam.isBlack()))) {
-                    // if the target tile is occupied...:
-                    if(board.getTile(realCoordinate).isTileOccupied()) {
-                        final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
-                        //... with an enemy team chess piece, then it is a valid attack move:
-                        if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
-                            legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
-                        }
+                // if the target tile is occupied...:
+                if(board.getTile(realCoordinate).isTileOccupied()) {
+                    final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
+                    //... with an enemy team chess piece, then it is a valid attack move:
+                    if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
+                        legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
                     }
                 }
-                // if the pawn is attacking left and the pawn is not on the first column if with the white team OR the
-                //  pawn is not on the last column if with the black team:
-                else if (curCoordinate == 9 &&
-                        !((BoardUtils.LAST_COLUMN[this.piecePosition] && this.pieceTeam.isBlack()) ||
-                                (BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceTeam.isWhite()))) {
-                    // if the target tile is occupied...:
-                    if(board.getTile(realCoordinate).isTileOccupied()) {
-                        final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
-                        //... with an enemy team chess piece, then it is a valid attack move:
-                        if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
-                            legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
-                        }
+            }
+            // if the pawn is attacking left and the pawn is not on the first column if with the white team OR the
+            //  pawn is not on the last column if with the black team:
+            else if (curCoordinate == 9 &&
+                    !((BoardUtils.LAST_COLUMN[this.piecePosition] && this.pieceTeam.isBlack()) ||
+                            (BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceTeam.isWhite()))) {
+                // if the target tile is occupied...:
+                if(board.getTile(realCoordinate).isTileOccupied()) {
+                    final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
+                    //... with an enemy team chess piece, then it is a valid attack move:
+                    if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
+                        legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
                     }
                 }
             }

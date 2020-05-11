@@ -13,7 +13,7 @@ public abstract class Move {
     public static final Move INVALID_MOVE = new invalidMove();
     protected final boolean isFirstMove;
 
-    private Move (final ChessBoard board, final ChessPiece piece, final int destCrd) {
+    private Move(final ChessBoard board, final ChessPiece piece, final int destCrd) {
         this.curBoard = board;
         this.movingPiece = piece;
         this.destinationCrd = destCrd;
@@ -33,12 +33,12 @@ public abstract class Move {
         // place all the current moving player's pieces on the new board:
         for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
             // if the piece that is being checked right now is not the moving piece, then put it at the same place:
-            if(!this.movingPiece.equals(piece)) {
+            if (!this.movingPiece.equals(piece)) {
                 builder.putPiece(piece);
             }
         }
         // place all the enemy pieces on the new board:
-        for (final ChessPiece piece: this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
+        for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
             builder.putPiece(piece);
         }
         // the piece that is being moved is placed on the new board now:
@@ -51,33 +51,33 @@ public abstract class Move {
     // This subclass defines a killing move (piece removal).
     public static class killerMove extends Move {
         final ChessPiece targetedPiece; // the enemy chess piece that is being attacked by our current piece
+
         public killerMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final ChessPiece target) {
             super(board, piece, destCrd);
             this.targetedPiece = target;
         }
 
         @Override
-        public ChessBoard executeMove() {
-            return null;
-        }
-        @Override
         public boolean isKillerMove() {
             return true;
         }
+
         @Override
         public ChessPiece getTargetedPiece() {
             return this.targetedPiece;
         }
+
         @Override
         public int hashCode() {
             return this.targetedPiece.hashCode() + super.hashCode();
         }
+
         @Override
         public boolean equals(final Object compared) {
-            if(this == compared) {
+            if (this == compared) {
                 return true;
             }
-            if(!(compared instanceof killerMove)) {
+            if (!(compared instanceof killerMove)) {
                 return false;
             }
             final killerMove comparedMove = (killerMove) compared;
@@ -85,10 +85,11 @@ public abstract class Move {
             return super.equals(comparedMove) && getTargetedPiece().equals(comparedMove.getTargetedPiece());
         }
     }
+
     // This subclass defines a normal moving move.
     public static final class normalMove extends Move {
 
-        public normalMove (final ChessBoard board, final ChessPiece piece, final int destCrd) {
+        public normalMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
             super(board, piece, destCrd);
         }
 
@@ -98,13 +99,20 @@ public abstract class Move {
         }
 
     }
+
     // This subclass defines a move made by a Pawn.
     public static final class pawnMove extends Move {
 
         public pawnMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
             super(board, piece, destCrd);
         }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof pawnMove && super.equals(compared);
+        }
     }
+
     // This subclass defines a killing move made by a Pawn.
     public static class pawnKillerMove extends killerMove {
 
@@ -112,7 +120,13 @@ public abstract class Move {
                               final ChessPiece target) {
             super(board, piece, destCrd, target);
         }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof pawnKillerMove && super.equals(compared);
+        }
     }
+
     // This subclass defines the En Passant move.
     public static final class enPassantMove extends pawnKillerMove {
 
@@ -120,7 +134,35 @@ public abstract class Move {
                              final ChessPiece target) {
             super(board, piece, destCrd, target);
         }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof enPassantMove && super.equals(compared);
+        }
+
+        @Override
+        public ChessBoard executeMove() {
+            final Builder builder = new Builder();
+            // for all the current player's pieces:
+            for(final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
+                // if the current piece is not the moving piece, then put it back on the board:
+                if(!this.movingPiece.equals(piece)) {
+                    builder.putPiece(piece);
+                }
+            }
+            // for all the enemy's pieces:
+            for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
+                // if the current piece is not the targeted piece, then put it back on the board:
+                if(!piece.equals(this.getTargetedPiece())) {
+                    builder.putPiece(piece);
+                }
+            }
+            builder.putPiece(this.movingPiece.movePiece(this));
+            builder.setMover(this.curBoard.getCurrentMovingPlayer().getOpponent().getTeam());
+            return builder.build();
+        }
     }
+
     // This subclass defines the Pawn's double tile move (moving 2 tiles).
     public static final class pawnDoubleMove extends Move {
 
@@ -132,21 +174,36 @@ public abstract class Move {
         public ChessBoard executeMove() {
             // same concept as above original function
             final Builder builder = new Builder();
-            for(final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
-                if(!this.movingPiece.equals(piece)) {
+            for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
+                if (!this.movingPiece.equals(piece)) {
                     builder.putPiece(piece);
                 }
             }
-            for (final ChessPiece piece: this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
+            for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
                 builder.putPiece(piece);
             }
-            final Pawn movingPawn = (Pawn)this.movingPiece.movePiece(this);
+            final Pawn movingPawn = (Pawn) this.movingPiece.movePiece(this);
             builder.putPiece(movingPawn);
             builder.setEnPassant(movingPawn); // NEW: after moving 2 tiles up, this pawn is now a potential en passant move
             builder.setMover(this.curBoard.getCurrentMovingPlayer().getOpponent().getTeam());
             return builder.build();
         }
     }
+
+    // This subclass defines the Non-Pawn pieces' killer move.
+    public static class nonPawnKillerMove extends killerMove {
+
+        public nonPawnKillerMove(final ChessBoard board, final ChessPiece movedPiece, final int destCrd,
+                                 final ChessPiece targetedPiece) {
+            super(board, movedPiece, destCrd, targetedPiece);
+        }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof nonPawnKillerMove && super.equals(compared);
+        }
+    }
+
     // This subclass defines the Castle move.
     static abstract class castleMove extends Move {
         protected final Rook rook;
@@ -165,22 +222,24 @@ public abstract class Move {
         public Rook getCastleRook() {
             return rook;
         }
+
         @Override
         public boolean isCastlingMove() {
             return true;
         }
+
         @Override
         public ChessBoard executeMove() {
             // same concept as above original function
             final Builder builder = new Builder();
-            for(final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
+            for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getActivePieces()) {
                 // NEW: if the piece being checked right now is not the moving piece AND is not the castling Rook.
                 // The "old" Rook is removed from the board and movement will be handled at the bottom part of this function.
-                if(!this.movingPiece.equals(piece) && !this.rook.equals(piece)) {
+                if (!this.movingPiece.equals(piece) && !this.rook.equals(piece)) {
                     builder.putPiece(piece);
                 }
             }
-            for (final ChessPiece piece: this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
+            for (final ChessPiece piece : this.curBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
                 builder.putPiece(piece);
             }
             // The moving of the castling Rook and the King will be handled here:
@@ -190,7 +249,28 @@ public abstract class Move {
             builder.setMover(this.curBoard.getCurrentMovingPlayer().getOpponent().getTeam());
             return builder.build();
         }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + this.rook.hashCode();
+            result = 31 * result + this.rookDestCrd;
+            return result;
+        }
+
+        @Override
+        public boolean equals(final Object compared) {
+            if(this == compared) {
+                return true;
+            }
+            if(!(compared instanceof castleMove)) {
+                return false;
+            }
+            final castleMove comparedCastleMove = (castleMove) compared;
+            return super.equals(comparedCastleMove) && this.rook.equals(comparedCastleMove.getCastleRook());
+        }
     }
+
     // This subclass defines the Castle move on the King side.
     public static final class kingSideCastleMove extends castleMove {
 
@@ -203,7 +283,13 @@ public abstract class Move {
         public String toString() {
             return "O-O"; // convention notation for King side castle
         }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof kingSideCastleMove && super.equals(compared);
+        }
     }
+
     // This subclass defines the Castle move on the Queen side.
     public static final class queenSideCastleMove extends castleMove {
 
@@ -216,7 +302,13 @@ public abstract class Move {
         public String toString() {
             return "O-O-O"; // convention notation for Queen side castle
         }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof queenSideCastleMove && super.equals(compared);
+        }
     }
+
     // This subclass defines an invalid move on a chess board.
     public static final class invalidMove extends Move {
 
@@ -229,6 +321,7 @@ public abstract class Move {
             throw new RuntimeException("INVALID MOVE!");
         }
     }
+
     // This subclass creates a move.
     public static class MoveCreator {
 
@@ -238,12 +331,12 @@ public abstract class Move {
 
         // createMove() returns a legal move given a chess board with the same starting coordinate (curCrd) and ending
         //  coordinate (destCrd).
-        public static Move createMove(final ChessBoard board, final int curCrd ,final int destCrd) {
+        public static Move createMove(final ChessBoard board, final int curCrd, final int destCrd) {
             // checks in all the possible legal moves for both players if there is a move with the same starting and
             //  ending coordinate:
             for (final Move move : board.getAllLegalMoves()) {
                 // if the current and destination coordinate are the same, then this is the move we want:
-                if(move.getCurrentCrd() == curCrd && move.getDestinationCrd() == destCrd) {
+                if (move.getCurrentCrd() == curCrd && move.getDestinationCrd() == destCrd) {
                     return move;
                 }
             }
@@ -256,22 +349,27 @@ public abstract class Move {
     public int getDestinationCrd() {
         return this.destinationCrd;
     }
+
     // getMovingPiece() returns the current moving piece.
     public ChessPiece getMovingPiece() {
         return this.movingPiece;
     }
+
     // getCurrentCrd() returns the current coordinate of the moving piece.
     public int getCurrentCrd() {
         return this.getMovingPiece().getPiecePosition();
     }
+
     // isKillerMove() checks if the current move is a killer move.
     public boolean isKillerMove() {
         return false;
     }
+
     // isCastlingMove() checks if the current move is a castling move.
     public boolean isCastlingMove() {
         return false;
     }
+
     // getTargetedPiece() returns the current piece being targeted for attack.
     public ChessPiece getTargetedPiece() {
         return null;
@@ -285,12 +383,13 @@ public abstract class Move {
         result = 31 * result + this.movingPiece.getPiecePosition();
         return result;
     }
+
     @Override
     public boolean equals(final Object compared) {
-        if(this == compared) {
+        if (this == compared) {
             return true;
         }
-        if(!(compared instanceof Move)) {
+        if (!(compared instanceof Move)) {
             return false;
         }
         final Move comparedMove = (Move) compared;

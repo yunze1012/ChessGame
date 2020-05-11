@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +30,7 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 public class Table {
     private final JFrame mainFrame;
     private final ChessBoardPanel boardPanel;
+    private final CapturedPieces capturedPiecesPanel;
     private ChessBoard chessBoard;
     private final static Dimension MAIN_FRAME_DIMENSION = new Dimension(600, 600);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
@@ -40,6 +42,7 @@ public class Table {
     private ChessTile destTile;
     private ChessPiece onClickMovedPiece;
     private BoardOrientation boardOrientation;
+    private final MoveHistory moveHistory;
 
     public Table() {
         this.mainFrame = new JFrame("Chess");
@@ -49,8 +52,11 @@ public class Table {
         final JMenuBar tableMenu = generateOptionsBar();
         this.mainFrame.setJMenuBar(tableMenu);
         this.mainFrame.setSize(MAIN_FRAME_DIMENSION);
+        this.capturedPiecesPanel = new CapturedPieces();
         this.boardPanel = new ChessBoardPanel();
+        this.moveHistory = new MoveHistory();
         this.mainFrame.add(this.boardPanel, BorderLayout.CENTER);
+        this.mainFrame.add(this.capturedPiecesPanel, BorderLayout.WEST);
         this.mainFrame.setVisible(true);
     }
 
@@ -167,7 +173,7 @@ public class Table {
                             //  the Table's chessBoard:
                             if(moveUpdate.getMoveStatus().isCompleted()) {
                                 chessBoard = moveUpdate.getUpdatedBoard();
-                                //TODO add the move that was executed to move log
+                                moveHistory.addMove(move);
                             }
                             // Clear everything back to initial state once again:
                             currentTile = null;
@@ -179,6 +185,7 @@ public class Table {
                             @Override
                             public void run() {
                                 boardPanel.displayBoard(chessBoard);
+                                capturedPiecesPanel.redraw(moveHistory);
                             }
                         });
                     }
