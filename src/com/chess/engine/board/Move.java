@@ -245,7 +245,7 @@ public abstract class Move {
             // The moving of the castling Rook and the King will be handled here:
             builder.putPiece(this.movingPiece.movePiece(this)); // Moving the king
             // Creating a new Rook at the destination coordinate:
-            builder.putPiece(new Rook(this.rookDestCrd, this.rook.getPieceTeam()));
+            builder.putPiece(new Rook(this.rookDestCrd, this.rook.getPieceTeam(), false));
             builder.setMover(this.curBoard.getCurrentMovingPlayer().getOpponent().getTeam());
             return builder.build();
         }

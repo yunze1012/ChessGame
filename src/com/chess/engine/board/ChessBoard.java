@@ -18,11 +18,13 @@ public class ChessBoard {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentMovingPlayer;
+    private final Pawn enPassantPawn;
 
     private ChessBoard(final Builder builder) {
         this.board = createBoard(builder);
         this.whitePieces = onBoardPieces(this.board, Team.WHITE);
         this.blackPieces = onBoardPieces(this.board, Team.BLACK);
+        this.enPassantPawn = builder.enPassantPawn;
         final Collection<Move> allWhiteLegalMoves = allLegalMoves(this.whitePieces);
         final Collection<Move> allBlackLegalMoves = allLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, allWhiteLegalMoves, allBlackLegalMoves);
@@ -154,8 +156,9 @@ public class ChessBoard {
             return this;
         }
         // setEnPassant() sets a pawn as a possible en passant pawn.
-        //TODO
-        public void setEnPassant(Pawn movingPawn) {
+        public Builder setEnPassant(Pawn movingPawn) {
+            this.enPassantPawn = movingPawn;
+            return this;
         }
     }
 
@@ -182,5 +185,9 @@ public class ChessBoard {
     // getCurrentMovingPlayer() returns the current moving player.
     public Player getCurrentMovingPlayer() {
         return this.currentMovingPlayer;
+    }
+    // getEnPassantPawn() returns the en passant pawn.
+    public Pawn getEnPassantPawn() {
+        return this.enPassantPawn;
     }
 }

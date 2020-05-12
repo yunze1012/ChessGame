@@ -12,6 +12,11 @@ public enum Team {
         }
 
         @Override
+        public int getEnemyDirection() {
+            return 1;
+        }
+
+        @Override
         public boolean isWhite() {
             return true;
         }
@@ -33,6 +38,11 @@ public enum Team {
         }
 
         @Override
+        public int getEnemyDirection() {
+            return -1;
+        }
+
+        @Override
         public boolean isWhite() {
             return false;
         }
@@ -49,6 +59,8 @@ public enum Team {
     };
     // getDirection() returns the direction in which the chess pieces of each team should move.
     public abstract int getDirection();
+    // getOppositeDirection() returns the enemy's direction in which the chess pieces of the enemy team should move.
+    public abstract int getEnemyDirection();
     // isWhite() checks if the piece is in the white team.
     public abstract boolean isWhite();
     // isBlack() checks if the piece is in the black team.

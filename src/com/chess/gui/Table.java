@@ -6,6 +6,7 @@ import com.chess.engine.board.ChessTile;
 import com.chess.engine.board.Move;
 import com.chess.engine.pieces.ChessPiece;
 import com.chess.engine.player.MoveUpdate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -118,7 +119,7 @@ public class Table {
                 add(tile);
             }
             setPreferredSize(BOARD_PANEL_DIMENSION);
-            validate();;
+            validate();
         }
 
         // displayBoard() displays the new chess board on the main frame.
@@ -293,13 +294,18 @@ public class Table {
         }
         // movingPieceLegalMoves() returns the legal moves for the current moving piece.
         private Collection<Move> movingPieceLegalMoves(final ChessBoard board) {
-            // if there is a selected piece and the selected piece is part of the current moving player's team:
-            if(onClickMovedPiece != null && onClickMovedPiece.getPieceTeam() == board.getCurrentMovingPlayer().getTeam()) {
-                // return all legal moves
-                return onClickMovedPiece.allowedMoves(board);
+            // all legal moves of the current moving player:
+            final Iterable<Move> allLegalMoves = board.getCurrentMovingPlayer().getLegalMoves();
+            // legal moves of the current moving piece:
+            final List<Move> movingPieceLegalMoves = new ArrayList<>();
+            // for all current moving player's legal moves, add all moves corresponding to the current moving piece to
+            //  the list:
+            for(final Move move : allLegalMoves) {
+                if(move.getMovingPiece() == onClickMovedPiece) {
+                    movingPieceLegalMoves.add(move);
+                }
             }
-            // or return nothing
-            return Collections.emptyList();
+            return ImmutableList.copyOf(movingPieceLegalMoves);
         }
     }
     // The class MoveHistory displays all the moves that have been executed before.

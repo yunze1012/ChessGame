@@ -39,7 +39,7 @@ public class Pawn extends ChessPiece{
             }
             // if the pawn is moving one tile forward, and the tile forward is not occupied:
             if (curCoordinate == 8 && !board.getTile(realCoordinate).isTileOccupied()) {
-                legalMoves.add(new normalMove(board, this, realCoordinate)); // INCOMPLETE CONSTRUCTOR, PROMOTIONS
+                legalMoves.add(new pawnMove(board, this, realCoordinate)); // INCOMPLETE CONSTRUCTOR, PROMOTIONS
             }
             // if the pawn is moving its first move, and the pawn is part of the white team and on the second row OR
             //  part of the back team and on the seventh row, and the pawn is moving two tiles forward:
@@ -68,6 +68,17 @@ public class Pawn extends ChessPiece{
                         legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
                     }
                 }
+                // else if there is an en passant pawn:
+                else if(board.getEnPassantPawn() != null) {
+                    // if the enemy pawn is next to your pawn (on your right), then you can execute the en passant move:
+                    if(board.getEnPassantPawn().getPiecePosition() ==
+                            (this.piecePosition + (this.pieceTeam.getEnemyDirection()))) {
+                        final ChessPiece pieceOnTarget = board.getEnPassantPawn();
+                        if(this.pieceTeam != pieceOnTarget.getPieceTeam()) { // check that is is an enemy pawn
+                            legalMoves.add(new enPassantMove(board, this, realCoordinate, pieceOnTarget));
+                        }
+                    }
+                }
             }
             // if the pawn is attacking left and the pawn is not on the first column if with the white team OR the
             //  pawn is not on the last column if with the black team:
@@ -80,6 +91,17 @@ public class Pawn extends ChessPiece{
                     //... with an enemy team chess piece, then it is a valid attack move:
                     if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
                         legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
+                    }
+                }
+                // else if there is an en passant pawn:
+                else if(board.getEnPassantPawn() != null) {
+                    // if the enemy pawn is next to your pawn (on your left, then you can execute the en passant move:
+                    if(board.getEnPassantPawn().getPiecePosition() ==
+                            (this.piecePosition + (this.pieceTeam.getDirection()))) {
+                        final ChessPiece pieceOnTarget = board.getEnPassantPawn();
+                        if(this.pieceTeam != pieceOnTarget.getPieceTeam()) { // check that is is an enemy pawn
+                            legalMoves.add(new enPassantMove(board, this, realCoordinate, pieceOnTarget));
+                        }
                     }
                 }
             }

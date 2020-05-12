@@ -44,7 +44,7 @@ public class BlackPlayer extends Player {
             if(!this.board.getTile(5).isTileOccupied() && !this.board.getTile(6).isTileOccupied()) {
                 final ChessTile tileOfRook = this.board.getTile(7); // The original King side Rook's position on the board.
                 // The rook must be present at its original place and must also be its first move. (Piece must be a rook)
-                if(tileOfRook.getPiece().getPieceType().isRook() && tileOfRook.isTileOccupied() &&
+                if(tileOfRook.isTileOccupied() && tileOfRook.getPiece().getPieceType().isRook() &&
                         tileOfRook.getPiece().isFirstMove()) {
                     // AND, none of the empty destination cases is targeted by enemy's pieces:
                     if(Player.attackOnTile(5, opponentLegalMoves).isEmpty() &&
@@ -62,7 +62,7 @@ public class BlackPlayer extends Player {
                     && !this.board.getTile(3).isTileOccupied()) {
                 final ChessTile tileOfRook = this.board.getTile(0); // The original Queen side Rook's position on the board.
                 // The rook must be present at its original place and must also be its first move. (Piece must be a rook)
-                if(tileOfRook.getPiece().getPieceType().isRook() && tileOfRook.isTileOccupied() &&
+                if(tileOfRook.isTileOccupied() && tileOfRook.getPiece().getPieceType().isRook() &&
                         tileOfRook.getPiece().isFirstMove()) {
                     // AND, none of the empty destination cases is targeted by enemy's pieces:
                     if(Player.attackOnTile(2, opponentLegalMoves).isEmpty() &&

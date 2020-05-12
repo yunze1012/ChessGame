@@ -6,10 +6,13 @@ import com.chess.engine.board.ChessBoard;
 import com.chess.engine.board.ChessTile;
 import com.chess.engine.board.Move;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.chess.engine.board.Move.*;
 
 public class King extends ChessPiece{
     // all possible move coordinate adjustments relative to the current King piece coordinate on the chess board:
@@ -39,18 +42,19 @@ public class King extends ChessPiece{
                 final ChessTile possibleDestinationTile = board.getTile(realCoordinate);
                 // if the current targeted potential move destination tile is not occupied:
                 if (!possibleDestinationTile.isTileOccupied()) {
-                    legalMoves.add(new Move.normalMove(board, this, realCoordinate));
+                    legalMoves.add(new normalMove(board, this, realCoordinate));
                 }
                 // or if it is occupied:
                 else {
                     final ChessPiece pieceAtTile = possibleDestinationTile.getPiece();
                     final Team teamOfPieceAtTile = pieceAtTile.getPieceTeam();
                     if (this.pieceTeam != teamOfPieceAtTile) {
-                        legalMoves.add(new Move.killerMove(board, this, realCoordinate, pieceAtTile));
+                        legalMoves.add(new nonPawnKillerMove(board, this, realCoordinate, pieceAtTile));
                     }
                 }
             }
         }
+
         return ImmutableList.copyOf(legalMoves);
     }
 

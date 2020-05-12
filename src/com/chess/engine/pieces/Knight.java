@@ -54,7 +54,7 @@ public class Knight extends ChessPiece{
                     final ChessPiece pieceAtTile = possibleDestinationTile.getPiece();
                     final Team teamOfPieceAtTile = pieceAtTile.getPieceTeam();
                     if (this.pieceTeam != teamOfPieceAtTile) {
-                        legalMoves.add(new killerMove(board, this, realCoordinate, pieceAtTile));
+                        legalMoves.add(new nonPawnKillerMove(board, this, realCoordinate, pieceAtTile));
                     }
                 }
             }
