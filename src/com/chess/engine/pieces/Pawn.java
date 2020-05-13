@@ -39,7 +39,13 @@ public class Pawn extends ChessPiece{
             }
             // if the pawn is moving one tile forward, and the tile forward is not occupied:
             if (curCoordinate == 8 && !board.getTile(realCoordinate).isTileOccupied()) {
-                legalMoves.add(new pawnMove(board, this, realCoordinate)); // INCOMPLETE CONSTRUCTOR, PROMOTIONS
+                // if the pawn is moving towards a pawn promotion possible tile:
+                if(this.pieceTeam.isPromotionTile(realCoordinate)) {
+                    legalMoves.add(new pawnPromotion(new pawnMove(board, this, realCoordinate)));
+                }
+                else {
+                    legalMoves.add(new pawnMove(board, this, realCoordinate));
+                }
             }
             // if the pawn is moving its first move, and the pawn is part of the white team and on the second row OR
             //  part of the back team and on the seventh row, and the pawn is moving two tiles forward:
@@ -65,7 +71,13 @@ public class Pawn extends ChessPiece{
                     final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
                     //... with an enemy team chess piece, then it is a valid attack move:
                     if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
-                        legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
+                        // if the pawn is moving towards a pawn promotion possible tile:
+                        if(this.pieceTeam.isPromotionTile(realCoordinate)) {
+                            legalMoves.add(new pawnPromotion(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget)));
+                        }
+                        else {
+                            legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
+                        }
                     }
                 }
                 // else if there is an en passant pawn:
@@ -90,7 +102,13 @@ public class Pawn extends ChessPiece{
                     final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
                     //... with an enemy team chess piece, then it is a valid attack move:
                     if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
-                        legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
+                        // if the pawn is moving towards a pawn promotion possible tile:
+                        if(this.pieceTeam.isPromotionTile(realCoordinate)) {
+                            legalMoves.add(new pawnPromotion(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget)));
+                        }
+                        else {
+                            legalMoves.add(new pawnKillerMove(board, this, realCoordinate, pieceOnTarget));
+                        }
                     }
                 }
                 // else if there is an en passant pawn:
@@ -119,5 +137,11 @@ public class Pawn extends ChessPiece{
     @Override
     public Pawn movePiece(final Move move) {
         return new Pawn(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+    }
+
+    // getPromotedPiece() returns the new promoted Queen from the old Pawn.
+    // NOTE: This is a direct promotion to Queen, the highest level piece.
+    public ChessPiece getPromotedPiece() {
+        return new Queen(this.piecePosition, this.pieceTeam, false);
     }
 }

@@ -20,7 +20,7 @@ import static com.chess.gui.Table.*;
 
 public class CapturedPieces extends JPanel {
     private static final Color PANEL_COLOUR = Color.decode("#DAB0B0");
-    private static final Dimension PANEL_DIMENSION = new Dimension(40, 80);
+    private static final Dimension PANEL_DIMENSION = new Dimension(80, 80);
     private static final EtchedBorder BORDER = new EtchedBorder(EtchedBorder.RAISED);
     private final JPanel topSide;
     private final JPanel bottomSide;
@@ -29,7 +29,7 @@ public class CapturedPieces extends JPanel {
         super(new BorderLayout());
         setBackground(PANEL_COLOUR);
         setBorder(BORDER);
-        this.topSide = new JPanel(new GridLayout(8, 2)); // 16 pieces in total, with same pieces side by side
+        this.topSide = new JPanel(new GridLayout(8, 2));
         this.topSide.setBackground(PANEL_COLOUR);
         this.bottomSide = new JPanel(new GridLayout(8, 2));
         this.bottomSide.setBackground(PANEL_COLOUR);
@@ -79,7 +79,8 @@ public class CapturedPieces extends JPanel {
                 final BufferedImage image = ImageIO.read(new File("images/pieces/" +
                         piece.getPieceTeam().toString() + piece.toString() + ".jpg"));
                 final ImageIcon icon= new ImageIcon(image);
-                final JLabel label = new JLabel();
+                final JLabel label = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(
+                        icon.getIconWidth() - 500, icon.getIconWidth() - 500, Image.SCALE_SMOOTH)));
                 this.topSide.add(label);
             } catch (final IOException e) {
                 e.printStackTrace();
@@ -90,7 +91,8 @@ public class CapturedPieces extends JPanel {
                 final BufferedImage image = ImageIO.read(new File("images/pieces/" +
                         piece.getPieceTeam().toString() + piece.toString() + ".jpg"));
                 final ImageIcon icon= new ImageIcon(image);
-                final JLabel label = new JLabel();
+                final JLabel label = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(
+                        icon.getIconWidth() - 500, icon.getIconWidth() - 500, Image.SCALE_SMOOTH)));
                 this.bottomSide.add(label);
             } catch (final IOException e) {
                 e.printStackTrace();

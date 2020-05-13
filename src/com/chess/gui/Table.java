@@ -33,9 +33,9 @@ public class Table {
     private final ChessBoardPanel boardPanel;
     private final CapturedPieces capturedPiecesPanel;
     private ChessBoard chessBoard;
-    private final static Dimension MAIN_FRAME_DIMENSION = new Dimension(600, 600);
-    private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
-    private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
+    private final static Dimension MAIN_FRAME_DIMENSION = new Dimension(900, 900);
+    private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(600, 525);
+    private final static Dimension TILE_PANEL_DIMENSION = new Dimension(15, 15);
     private final Color whiteColor = Color.decode("#FDF9F9");
     private final Color blackColor = Color.decode("#737272");
     private static String piecesImagesPath = "images/pieces/";

@@ -1,5 +1,6 @@
 package com.chess.engine;
 
+import com.chess.engine.board.BoardUtils;
 import com.chess.engine.player.BlackPlayer;
 import com.chess.engine.player.Player;
 import com.chess.engine.player.WhitePlayer;
@@ -30,6 +31,11 @@ public enum Team {
         public Player selectPlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer) {
             return whitePlayer;
         }
+
+        @Override
+        public boolean isPromotionTile(final int coordinate) {
+            return BoardUtils.FIRST_ROW[coordinate];
+        }
     },
     BLACK {
         @Override
@@ -56,6 +62,11 @@ public enum Team {
         public Player selectPlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer) {
             return blackPlayer;
         }
+
+        @Override
+        public boolean isPromotionTile(final int coordinate) {
+            return BoardUtils.LAST_ROW[coordinate];
+        }
     };
     // getDirection() returns the direction in which the chess pieces of each team should move.
     public abstract int getDirection();
@@ -67,4 +78,6 @@ public enum Team {
     public abstract boolean isBlack();
     // selectPlayer() returns the corresponding player associated with the specific Team.
     public abstract Player selectPlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer);
+    // isPromotionTile(coordinate) determines if the tile with given coordinate is a pawn promotion possible tile.
+    public abstract boolean isPromotionTile(final int coordinate);
 }

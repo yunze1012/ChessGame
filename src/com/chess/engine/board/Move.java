@@ -345,6 +345,58 @@ public abstract class Move {
         }
     }
 
+    // This subclass defines a pawn promotion.
+    public static class pawnPromotion extends Move {
+        final Move consumedMove;
+        final Pawn pawnToPromotion;
+
+        public pawnPromotion(final Move consumedMove) {
+            super(consumedMove.getCurBoard(), consumedMove.getMovingPiece(), consumedMove.getDestinationCrd());
+            this.consumedMove = consumedMove;
+            this.pawnToPromotion = (Pawn) consumedMove.getMovingPiece();
+        }
+
+        @Override
+        public ChessBoard executeMove() {
+            final ChessBoard afterMoveBoard = this.consumedMove.executeMove();
+            final ChessBoard.Builder builder = new Builder();
+            // for all of the current player's pieces:
+            for(final ChessPiece piece : afterMoveBoard.getCurrentMovingPlayer().getActivePieces()) {
+                // if the current looking piece is not the promoted pawn, then place it at the same place on the board:
+                if(!this.pawnToPromotion.equals(piece)) {
+                    builder.putPiece(piece);
+                }
+            }
+            // for all the enemy's pieces, place them at the same place on the board (none moved):
+            for(final ChessPiece piece : afterMoveBoard.getCurrentMovingPlayer().getOpponent().getActivePieces()) {
+                builder.putPiece(piece);
+            }
+            builder.putPiece(this.pawnToPromotion.getPromotedPiece().movePiece(this));
+            builder.setMover(afterMoveBoard.getCurrentMovingPlayer().getTeam()); // player already changed in afterMoveBoard
+            return builder.build();
+        }
+
+        @Override
+        public boolean isKillerMove() {
+            return this.consumedMove.isKillerMove();
+        }
+
+        @Override
+        public ChessPiece getTargetedPiece() {
+            return this.consumedMove.getTargetedPiece();
+        }
+
+        @Override
+        public int hashCode() {
+            return consumedMove.hashCode() + (31 * pawnToPromotion.hashCode());
+        }
+
+        @Override
+        public boolean equals(final Object compared) {
+            return this == compared || compared instanceof pawnPromotion && super.equals(compared);
+        }
+    }
+
     // getDestinationCrd() returns the destination coordinate (tile index number) of the current move.
     public int getDestinationCrd() {
         return this.destinationCrd;
@@ -373,6 +425,11 @@ public abstract class Move {
     // getTargetedPiece() returns the current piece being targeted for attack.
     public ChessPiece getTargetedPiece() {
         return null;
+    }
+
+    // getCurBoard() returns the current board.
+    public ChessBoard getCurBoard() {
+        return this.curBoard;
     }
 
     @Override
