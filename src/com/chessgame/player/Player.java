@@ -1,10 +1,10 @@
-package com.chess.engine.player;
+package com.chessgame.player;
 
-import com.chess.engine.Team;
-import com.chess.engine.board.ChessBoard;
-import com.chess.engine.board.Move;
-import com.chess.engine.pieces.ChessPiece;
-import com.chess.engine.pieces.King;
+import com.chessgame.board.ChessBoard;
+import com.chessgame.board.Move;
+import com.chessgame.board.MoveUpdate;
+import com.chessgame.pieces.ChessPiece;
+import com.chessgame.pieces.King;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
@@ -51,16 +51,11 @@ public abstract class Player {
         throw new RuntimeException("NO KING ON BOARD!");
     }
 
-    // getActivePieces() returns all the current active pieces on the chess board for this player.
-    public abstract Collection<ChessPiece> getActivePieces();
-    // getTeam() returns the team of the current player.
-    public abstract Team getTeam();
-    // getOpponent() returns the opponent player.
-    public abstract Player getOpponent();
     // getKing() returns the current player's King.
     public King getKing() {
         return this.king;
     }
+
     // getLegalMoves() returns the collection of legal moves of the current player.
     public Collection<Move> getLegalMoves() {
         return this.legalMoves;
@@ -70,14 +65,17 @@ public abstract class Player {
     public boolean isLegalMove(final Move move) {
         return this.legalMoves.contains(move);
     }
+
     // isCheck() checks if the current player is in check.
     public boolean isCheck() {
         return this.isInCheck;
     }
+
     // isCheckMate() checks if the current player is in check mate.
     public boolean isCheckMate() {
         return this.isInCheck && !hasEscapeMove();
     }
+
     // isStaleMate() checks if the current game is in stale mate (draw game).
     public boolean isStaleMate() {
         return !this.isInCheck && !hasEscapeMove();
@@ -96,35 +94,45 @@ public abstract class Player {
         }
         return false;
     }
+
     // TODO isCastled() function implementation:
     // isCastled() checks if the player has used his castling move.
     public boolean isCastled() {
         return false;
     }
 
-    // makeMove(move) makes a move on the chess board (updated the current ChessBoard with a new ChessBoard with the
+    // makeMove(move) makes a move on the chessgame board (updated the current ChessBoard with a new ChessBoard with the
     //  move already executed using the MoveUpdate class).
     public MoveUpdate makeMove(final Move move) {
         // if the move is not a legal move, then "update" its status to ILLEGAL_MOVE and the move is not executed.
         if (!isLegalMove(move)){
-            return new MoveUpdate(this.board, move, MoveStatus.ILLEGAL_MOVE);
+            return new MoveUpdate(this.board, Move.MoveStatus.ILLEGAL_MOVE);
         }
         // POTENTIAL UPDATED new ChessBoard after making the move:
         final ChessBoard updateBoard = move.executeMove();
-        // all the enemy attacks on the current player's King on the CURRENT chess board:
+        // all the enemy attacks on the current player's King on the CURRENT chessgame board:
         final Collection<Move> attacksOnKing =
                 Player.attackOnTile(updateBoard.getCurrentMovingPlayer().getOpponent().getKing().getPiecePosition(),
                         updateBoard.getCurrentMovingPlayer().getLegalMoves());
         // if there is at least one attack on the current player's King, then the current player is in Check and the
         //  move is not executed:
         if(!attacksOnKing.isEmpty()) {
-            return new MoveUpdate(this.board, move, MoveStatus.IN_CHECK);
+            return new MoveUpdate(this.board, Move.MoveStatus.IN_CHECK);
         }
         // otherwise, the current ChessBoard is updated to the new ChessBoard with the move COMPLETED and executed on
         //  the current ChessBoard:
-        return new MoveUpdate(updateBoard, move, MoveStatus.COMPLETED);
+        return new MoveUpdate(updateBoard, Move.MoveStatus.COMPLETED);
     }
 
     // calculateCastlingMoves() calculates all the castling moves available for the current player on the board.
     protected abstract Collection<Move> calculateCastlingMoves(Collection<Move> legalMoves, Collection<Move> opponentLegalMoves);
+
+    // getActivePieces() returns all the current active pieces on the chessgame board for this player.
+    public abstract Collection<ChessPiece> getActivePieces();
+
+    // getTeam() returns the team of the current player.
+    public abstract Team getTeam();
+
+    // getOpponent() returns the opponent player.
+    public abstract Player getOpponent();
 }

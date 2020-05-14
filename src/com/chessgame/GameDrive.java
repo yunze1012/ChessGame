@@ -1,7 +1,7 @@
-package com.chess;
+package com.chessgame;
 
-import com.chess.engine.board.ChessBoard;
-import com.chess.gui.Table;
+import com.chessgame.board.ChessBoard;
+import com.chessgame.gui.Table;
 
 public class GameDrive {
 

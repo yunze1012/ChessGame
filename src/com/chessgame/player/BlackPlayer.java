@@ -1,20 +1,20 @@
-package com.chess.engine.player;
+package com.chessgame.player;
 
-import com.chess.engine.Team;
-import com.chess.engine.board.ChessBoard;
-import com.chess.engine.board.ChessTile;
-import com.chess.engine.board.Move;
-import com.chess.engine.pieces.ChessPiece;
-import com.chess.engine.pieces.Rook;
+import com.chessgame.board.ChessBoard;
+import com.chessgame.board.ChessTile;
+import com.chessgame.board.Move;
+import com.chessgame.pieces.ChessPiece;
+import com.chessgame.pieces.Rook;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chess.engine.board.Move.*;
+import static com.chessgame.board.Move.*;
 
 public class BlackPlayer extends Player {
+
     public BlackPlayer(final ChessBoard board, final Collection<Move> whiteMoves, final Collection<Move> blackMoves) {
         super(board, blackMoves, whiteMoves);
     }
@@ -24,10 +24,12 @@ public class BlackPlayer extends Player {
     public Collection<ChessPiece> getActivePieces() {
         return this.board.getBlackPieces();
     }
+
     @Override
     public Team getTeam() {
         return Team.BLACK;
     }
+
     @Override
     public Player getOpponent() {
         return this.board.getWhitePlayer();
@@ -51,7 +53,7 @@ public class BlackPlayer extends Player {
                             Player.attackOnTile(6, opponentLegalMoves).isEmpty()) {
                         // adding a new King side castling move with the corresponding destination coordinates for the
                         //  King and Rook for the black team:
-                        castlingMoves.add(new kingSideCastleMove(this.board, this.king, 6,
+                        castlingMoves.add(new KingSideCastleMove(this.board, this.king, 6,
                                 (Rook)tileOfRook.getPiece(), tileOfRook.getTileCoordinates(), 5));
                     }
                 }
@@ -69,7 +71,7 @@ public class BlackPlayer extends Player {
                             Player.attackOnTile(3, opponentLegalMoves).isEmpty()) {
                         // adding a new Queen side castling move with the corresponding destination coordinates for the
                         //  King and Rook for the white team:
-                        castlingMoves.add(new queenSideCastleMove(this.board, this.king, 2,
+                        castlingMoves.add(new QueenSideCastleMove(this.board, this.king, 2,
                                 (Rook)tileOfRook.getPiece(), tileOfRook.getTileCoordinates(), 3));
                     }
                 }

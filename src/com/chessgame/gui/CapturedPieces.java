@@ -1,7 +1,7 @@
-package com.chess.gui;
+package com.chessgame.gui;
 
-import com.chess.engine.board.Move;
-import com.chess.engine.pieces.ChessPiece;
+import com.chessgame.board.Move;
+import com.chessgame.pieces.ChessPiece;
 import com.google.common.primitives.Ints;
 
 import javax.imageio.ImageIO;
@@ -13,10 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static com.chess.gui.Table.*;
+import static com.chessgame.gui.Table.*;
 
 public class CapturedPieces extends JPanel {
     private static final Color PANEL_COLOUR = Color.decode("#DAB0B0");
@@ -60,18 +59,8 @@ public class CapturedPieces extends JPanel {
         }
         // now, sort each pieces in the captured pieces list according to their value points in a Chess game
         //  (from small to big) so that the display can be made from small pieces to big pieces captured:
-        Collections.sort(whiteCapturedPieces, new Comparator<ChessPiece>() {
-            @Override
-            public int compare(ChessPiece o1, ChessPiece o2) {
-                return Ints.compare(o1.getPiecePoints(), o2.getPiecePoints());
-            }
-        });
-        Collections.sort(blackCapturedPieces, new Comparator<ChessPiece>() {
-            @Override
-            public int compare(ChessPiece o1, ChessPiece o2) {
-                return Ints.compare(o1.getPiecePoints(), o2.getPiecePoints());
-            }
-        });
+        Collections.sort(whiteCapturedPieces, (o1, o2) -> Ints.compare(o1.getPiecePoints(), o2.getPiecePoints()));
+        Collections.sort(blackCapturedPieces, (o1, o2) -> Ints.compare(o1.getPiecePoints(), o2.getPiecePoints()));
         // add each corresponding piece's image to the captured pieces panel for each team
         // (black captured pieces at bottom -> white side of board, and white captured pieces on top -> black side of board):
         for(final ChessPiece piece : whiteCapturedPieces) {

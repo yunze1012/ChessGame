@@ -1,16 +1,17 @@
-package com.chess.engine.board;
+package com.chessgame.board;
 
-import com.chess.engine.pieces.ChessPiece;
-import com.chess.engine.pieces.Pawn;
-import com.chess.engine.pieces.Rook;
+import com.chessgame.pieces.ChessPiece;
+import com.chessgame.pieces.Pawn;
+import com.chessgame.pieces.Rook;
 
-import static com.chess.engine.board.ChessBoard.*;
+import static com.chessgame.board.ChessBoard.*;
 
 public abstract class Move {
+    public static final Move INVALID_MOVE = new InvalidMove();
+
     final ChessBoard curBoard;
     final ChessPiece movingPiece; // current moving piece
     final int destinationCrd; // coordinate of the destination tile
-    public static final Move INVALID_MOVE = new invalidMove();
     protected final boolean isFirstMove;
 
     private Move(final ChessBoard board, final ChessPiece piece, final int destCrd) {
@@ -48,9 +49,63 @@ public abstract class Move {
         return builder.build();
     }
 
+    // getDestinationCrd() returns the destination coordinate (tile index number) of the current move.
+    public int getDestinationCrd() {
+        return this.destinationCrd;
+    }
+
+    // getMovingPiece() returns the current moving piece.
+    public ChessPiece getMovingPiece() {
+        return this.movingPiece;
+    }
+
+    // getCurrentCrd() returns the current coordinate of the moving piece.
+    public int getCurrentCrd() {
+        return this.getMovingPiece().getPiecePosition();
+    }
+
+    // isKillerMove() checks if the current move is a killer move.
+    public boolean isKillerMove() {
+        return false;
+    }
+
+    // getTargetedPiece() returns the current piece being targeted for attack.
+    public ChessPiece getTargetedPiece() {
+        return null;
+    }
+
+    // getCurBoard() returns the current board.
+    public ChessBoard getCurBoard() {
+        return this.curBoard;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + this.destinationCrd;
+        result = 31 * result + this.movingPiece.hashCode();
+        result = 31 * result + this.movingPiece.getPiecePosition();
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object compared) {
+        if (this == compared) {
+            return true;
+        }
+        if (!(compared instanceof Move)) {
+            return false;
+        }
+        final Move comparedMove = (Move) compared;
+        // compare if the moving piece is the same and if they move to the same destination:
+        return getDestinationCrd() == comparedMove.getDestinationCrd() &&
+                getMovingPiece().equals(comparedMove.getMovingPiece()) &&
+                getCurrentCrd() == comparedMove.getCurrentCrd();
+    }
+
     // This subclass defines a killing move (piece removal).
     public static class killerMove extends Move {
-        final ChessPiece targetedPiece; // the enemy chess piece that is being attacked by our current piece
+        final ChessPiece targetedPiece; // the enemy chessgame piece that is being attacked by our current piece
 
         public killerMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final ChessPiece target) {
             super(board, piece, destCrd);
@@ -87,57 +142,57 @@ public abstract class Move {
     }
 
     // This subclass defines a normal moving move.
-    public static final class normalMove extends Move {
+    public static final class NormalMove extends Move {
 
-        public normalMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
+        public NormalMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
             super(board, piece, destCrd);
         }
 
         @Override
         public boolean equals(final Object compared) {
-            return this == compared || compared instanceof normalMove && super.equals(compared);
+            return this == compared || compared instanceof NormalMove && super.equals(compared);
         }
 
     }
 
     // This subclass defines a move made by a Pawn.
-    public static final class pawnMove extends Move {
+    public static final class PawnMove extends Move {
 
-        public pawnMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
+        public PawnMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
             super(board, piece, destCrd);
         }
 
         @Override
         public boolean equals(final Object compared) {
-            return this == compared || compared instanceof pawnMove && super.equals(compared);
+            return this == compared || compared instanceof PawnMove && super.equals(compared);
         }
     }
 
     // This subclass defines a killing move made by a Pawn.
-    public static class pawnKillerMove extends killerMove {
+    public static class PawnKillerMove extends killerMove {
 
-        public pawnKillerMove(final ChessBoard board, final ChessPiece piece, final int destCrd,
+        public PawnKillerMove(final ChessBoard board, final ChessPiece piece, final int destCrd,
                               final ChessPiece target) {
             super(board, piece, destCrd, target);
         }
 
         @Override
         public boolean equals(final Object compared) {
-            return this == compared || compared instanceof pawnKillerMove && super.equals(compared);
+            return this == compared || compared instanceof PawnKillerMove && super.equals(compared);
         }
     }
 
     // This subclass defines the En Passant move.
-    public static final class enPassantMove extends pawnKillerMove {
+    public static final class EnPassantMove extends PawnKillerMove {
 
-        public enPassantMove(final ChessBoard board, final ChessPiece piece, final int destCrd,
+        public EnPassantMove(final ChessBoard board, final ChessPiece piece, final int destCrd,
                              final ChessPiece target) {
             super(board, piece, destCrd, target);
         }
 
         @Override
         public boolean equals(final Object compared) {
-            return this == compared || compared instanceof enPassantMove && super.equals(compared);
+            return this == compared || compared instanceof EnPassantMove && super.equals(compared);
         }
 
         @Override
@@ -164,9 +219,9 @@ public abstract class Move {
     }
 
     // This subclass defines the Pawn's double tile move (moving 2 tiles).
-    public static final class pawnDoubleMove extends Move {
+    public static final class PawnDoubleMove extends Move {
 
-        public pawnDoubleMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
+        public PawnDoubleMove(final ChessBoard board, final ChessPiece piece, final int destCrd) {
             super(board, piece, destCrd);
         }
 
@@ -191,26 +246,26 @@ public abstract class Move {
     }
 
     // This subclass defines the Non-Pawn pieces' killer move.
-    public static class nonPawnKillerMove extends killerMove {
+    public static class NonPawnKillerMove extends killerMove {
 
-        public nonPawnKillerMove(final ChessBoard board, final ChessPiece movedPiece, final int destCrd,
+        public NonPawnKillerMove(final ChessBoard board, final ChessPiece movedPiece, final int destCrd,
                                  final ChessPiece targetedPiece) {
             super(board, movedPiece, destCrd, targetedPiece);
         }
 
         @Override
         public boolean equals(final Object compared) {
-            return this == compared || compared instanceof nonPawnKillerMove && super.equals(compared);
+            return this == compared || compared instanceof NonPawnKillerMove && super.equals(compared);
         }
     }
 
     // This subclass defines the Castle move.
-    static abstract class castleMove extends Move {
+    static abstract class CastleMove extends Move {
         protected final Rook rook;
         protected final int rookCurCrd; // current rook coordinate
         protected final int rookDestCrd; // rook destination coordinate
 
-        public castleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
+        public CastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
                           final int rookCurCrd, final int rookDestCrd) {
             super(board, piece, destCrd);
             this.rook = rook;
@@ -221,11 +276,6 @@ public abstract class Move {
         // getCastleRook() returns the rook that is being castled.
         public Rook getCastleRook() {
             return rook;
-        }
-
-        @Override
-        public boolean isCastlingMove() {
-            return true;
         }
 
         @Override
@@ -263,18 +313,18 @@ public abstract class Move {
             if(this == compared) {
                 return true;
             }
-            if(!(compared instanceof castleMove)) {
+            if(!(compared instanceof CastleMove)) {
                 return false;
             }
-            final castleMove comparedCastleMove = (castleMove) compared;
+            final CastleMove comparedCastleMove = (CastleMove) compared;
             return super.equals(comparedCastleMove) && this.rook.equals(comparedCastleMove.getCastleRook());
         }
     }
 
     // This subclass defines the Castle move on the King side.
-    public static final class kingSideCastleMove extends castleMove {
+    public static final class KingSideCastleMove extends CastleMove {
 
-        public kingSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
+        public KingSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
                                   final int rookCurCrd, final int rookDestCrd) {
             super(board, piece, destCrd, rook, rookCurCrd, rookDestCrd);
         }
@@ -286,14 +336,14 @@ public abstract class Move {
 
         @Override
         public boolean equals(final Object compared) {
-            return this == compared || compared instanceof kingSideCastleMove && super.equals(compared);
+            return this == compared || compared instanceof KingSideCastleMove && super.equals(compared);
         }
     }
 
     // This subclass defines the Castle move on the Queen side.
-    public static final class queenSideCastleMove extends castleMove {
+    public static final class QueenSideCastleMove extends CastleMove {
 
-        public queenSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
+        public QueenSideCastleMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final Rook rook,
                                    final int rookCurCrd, final int rookDestCrd) {
             super(board, piece, destCrd, rook, rookCurCrd, rookDestCrd);
         }
@@ -305,14 +355,14 @@ public abstract class Move {
 
         @Override
         public boolean equals(final Object compared) {
-            return this == compared || compared instanceof queenSideCastleMove && super.equals(compared);
+            return this == compared || compared instanceof QueenSideCastleMove && super.equals(compared);
         }
     }
 
-    // This subclass defines an invalid move on a chess board.
-    public static final class invalidMove extends Move {
+    // This subclass defines an invalid move on a chessgame board.
+    public static final class InvalidMove extends Move {
 
-        public invalidMove() {
+        public InvalidMove() {
             super(null, -1);
         }
 
@@ -326,10 +376,10 @@ public abstract class Move {
     public static class MoveCreator {
 
         private MoveCreator() {
-            throw new RuntimeException("Not instantiable");
+            throw new RuntimeException("ERROR: Not instantiable");
         }
 
-        // createMove() returns a legal move given a chess board with the same starting coordinate (curCrd) and ending
+        // createMove() returns a legal move given a chessgame board with the same starting coordinate (curCrd) and ending
         //  coordinate (destCrd).
         public static Move createMove(final ChessBoard board, final int curCrd, final int destCrd) {
             // checks in all the possible legal moves for both players if there is a move with the same starting and
@@ -397,62 +447,27 @@ public abstract class Move {
         }
     }
 
-    // getDestinationCrd() returns the destination coordinate (tile index number) of the current move.
-    public int getDestinationCrd() {
-        return this.destinationCrd;
-    }
-
-    // getMovingPiece() returns the current moving piece.
-    public ChessPiece getMovingPiece() {
-        return this.movingPiece;
-    }
-
-    // getCurrentCrd() returns the current coordinate of the moving piece.
-    public int getCurrentCrd() {
-        return this.getMovingPiece().getPiecePosition();
-    }
-
-    // isKillerMove() checks if the current move is a killer move.
-    public boolean isKillerMove() {
-        return false;
-    }
-
-    // isCastlingMove() checks if the current move is a castling move.
-    public boolean isCastlingMove() {
-        return false;
-    }
-
-    // getTargetedPiece() returns the current piece being targeted for attack.
-    public ChessPiece getTargetedPiece() {
-        return null;
-    }
-
-    // getCurBoard() returns the current board.
-    public ChessBoard getCurBoard() {
-        return this.curBoard;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = 31 * result + this.destinationCrd;
-        result = 31 * result + this.movingPiece.hashCode();
-        result = 31 * result + this.movingPiece.getPiecePosition();
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object compared) {
-        if (this == compared) {
-            return true;
-        }
-        if (!(compared instanceof Move)) {
-            return false;
-        }
-        final Move comparedMove = (Move) compared;
-        // compare if the moving piece is the same and if they move to the same destination:
-        return getDestinationCrd() == comparedMove.getDestinationCrd() &&
-                getMovingPiece().equals(comparedMove.getMovingPiece()) &&
-                getCurrentCrd() == comparedMove.getCurrentCrd();
+    // Different possible move status for the current move:
+    public enum MoveStatus {
+        COMPLETED {
+            @Override
+            public boolean isCompleted() {
+                return true;
+            }
+        },
+        ILLEGAL_MOVE {
+            @Override
+            public boolean isCompleted() {
+                return false;
+            }
+        },
+        IN_CHECK {
+            @Override
+            public boolean isCompleted() {
+                return false;
+            }
+        };
+        // isCompleted() checks if the move is completed;
+        public abstract boolean isCompleted();
     }
 }
