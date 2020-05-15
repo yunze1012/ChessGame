@@ -1,10 +1,13 @@
-package com.chessgame.board;
+package com.chessgame.movement;
 
-public class MoveUpdate {
+import com.chessgame.board.ChessBoard;
+import com.chessgame.movement.Move;
+
+public class BoardUpdate {
     private final ChessBoard updatedBoard;
     private final Move.MoveStatus moveStatus;
 
-    public MoveUpdate(final ChessBoard updatedBoard, final Move.MoveStatus moveStatus) {
+    public BoardUpdate(final ChessBoard updatedBoard, final Move.MoveStatus moveStatus) {
         this.updatedBoard = updatedBoard;
         this.moveStatus = moveStatus;
     }

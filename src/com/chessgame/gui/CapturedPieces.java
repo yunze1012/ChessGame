@@ -1,6 +1,6 @@
 package com.chessgame.gui;
 
-import com.chessgame.board.Move;
+import com.chessgame.movement.Move;
 import com.chessgame.pieces.ChessPiece;
 import com.google.common.primitives.Ints;
 

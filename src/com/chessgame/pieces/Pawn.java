@@ -2,17 +2,17 @@ package com.chessgame.pieces;
 
 import com.chessgame.player.Team;
 import com.chessgame.board.ChessBoard;
-import com.chessgame.board.Move;
+import com.chessgame.movement.Move;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chessgame.board.Move.*;
+import static com.chessgame.movement.Move.*;
 
 public class Pawn extends ChessPiece{
-    // all possible move coordinate adjustments relative to the current Pawn piece coordinate on the chessgame board:
+    // all possible move coordinate adjustments relative to the current Pawn piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD= {7, 8, 9, 16};
     // constructor when it is the piece's first move:
     public Pawn(final int posn, final Team team) {
@@ -67,7 +67,7 @@ public class Pawn extends ChessPiece{
                 // if the target tile is occupied...:
                 if(board.getTile(realCoordinate).isTileOccupied()) {
                     final ChessPiece pieceOnTarget = board.getTile(realCoordinate).getPiece();
-                    //... with an enemy team chessgame piece, then it is a valid attack move:
+                    //... with an enemy team chess piece, then it is a valid attack move:
                     if(this.pieceTeam != pieceOnTarget.getPieceTeam()) {
                         // if the pawn is moving towards a pawn promotion possible tile:
                         if(this.pieceTeam.isPromotionTile(realCoordinate)) {
@@ -134,7 +134,8 @@ public class Pawn extends ChessPiece{
     // for general function purpose, see ChessPiece class file.
     @Override
     public Pawn movePiece(final Move move) {
-        return new Pawn(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+        // NOTE: If you move the piece, then it is no longer the piece's first move.
+        return new Pawn(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam(), false);
     }
 
     // getPromotedPiece() returns the new promoted Queen from the old Pawn.

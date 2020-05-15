@@ -1,7 +1,7 @@
 package com.chessgame.player.aiopponent;
 
 import com.chessgame.board.ChessBoard;
-import com.chessgame.board.Move;
+import com.chessgame.movement.Move;
 
 public interface Algorithms {
 

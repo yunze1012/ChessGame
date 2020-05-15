@@ -2,7 +2,7 @@ package com.chessgame.player;
 
 import com.chessgame.board.ChessBoard;
 import com.chessgame.board.ChessTile;
-import com.chessgame.board.Move;
+import com.chessgame.movement.Move;
 import com.chessgame.pieces.ChessPiece;
 import com.chessgame.pieces.Rook;
 import com.google.common.collect.ImmutableList;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chessgame.board.Move.*;
+import static com.chessgame.movement.Move.*;
 
 public class WhitePlayer extends Player {
     public WhitePlayer(final ChessBoard board, final Collection<Move> whiteMoves, final Collection<Move> blackMoves) {

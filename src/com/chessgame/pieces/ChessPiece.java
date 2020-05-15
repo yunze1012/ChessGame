@@ -2,7 +2,7 @@ package com.chessgame.pieces;
 
 import com.chessgame.player.Team;
 import com.chessgame.board.ChessBoard;
-import com.chessgame.board.Move;
+import com.chessgame.movement.Move;
 
 import java.util.Collection;
 
@@ -19,7 +19,7 @@ public abstract class ChessPiece {
         this.typeOfPiece = typeOfPiece;
     }
 
-    // ifFirstMove() checks if it is this chessgame piece's first move on the chessgame board.
+    // ifFirstMove() checks if it is this chess piece's first move on the chess board.
     public boolean isFirstMove() {
         return this.isFirstMove;
     }
@@ -29,12 +29,12 @@ public abstract class ChessPiece {
         return this.pieceTeam;
     }
 
-    // getPosition() returns the current piece coordinate on the chessgame board (index).
+    // getPosition() returns the current piece coordinate on the chess board (index).
     public int getPiecePosition() {
         return this.piecePosition;
     }
 
-    // getPieceType() returns the type of the current chessgame piece.
+    // getPieceType() returns the type of the current chess piece.
     public pieceType getPieceType() {
         return this.typeOfPiece;
     }
@@ -49,7 +49,7 @@ public abstract class ChessPiece {
         if (this == compared) {
             return true;
         }
-        // if the compared object is not a chessgame piece, then it is surely false:
+        // if the compared object is not a chess piece, then it is surely false:
         if (!(compared instanceof ChessPiece)) {
             return false;
         }
@@ -67,13 +67,13 @@ public abstract class ChessPiece {
         return result;
     }
 
-    // movePiece() returns a new ChessPiece with the move applied on the current chessgame piece:
+    // movePiece() returns a new ChessPiece with the move applied on the current chess piece:
     public abstract ChessPiece movePiece(Move move);
 
     // allowedMoves(board) calculates the allowed moves on the given parameter ChessBoard for the current ChessPiece.
     public abstract Collection<Move> allowedMoves(final ChessBoard board);
 
-    // All the types of chessgame piece:
+    // All the types of chess piece:
     public enum pieceType {
         PAWN("PAWN", 100){
             @Override
@@ -155,10 +155,10 @@ public abstract class ChessPiece {
             return this.pieceName;
         }
 
-        // isKing() checks if the current chessgame piece is a King.
+        // isKing() checks if the current chess piece is a King.
         public abstract boolean isKing();
 
-        // isRook() checks if the current chessgame piece is a Rook.
+        // isRook() checks if the current chess piece is a Rook.
         public abstract boolean isRook();
 
         // getPiecePoints() returns the points value of the current piece type.

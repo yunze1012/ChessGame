@@ -2,9 +2,9 @@ package com.chessgame.gui;
 
 import com.chessgame.board.ChessBoard;
 import com.chessgame.board.ChessTile;
-import com.chessgame.board.Move;
+import com.chessgame.movement.Move;
 import com.chessgame.pieces.ChessPiece;
-import com.chessgame.board.MoveUpdate;
+import com.chessgame.movement.BoardUpdate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -32,6 +32,7 @@ public class Table {
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(15, 15);
     private final Color whiteColor = Color.decode("#FDF9F9");
     private final Color blackColor = Color.decode("#737272");
+    private final Color redColor = Color.decode("#FD603F");
     private final static String piecesImagesPath = "images/pieces/";
     private ChessTile currentTile;
     private ChessTile destTile;
@@ -87,12 +88,12 @@ public class Table {
         return customizeMenu;
     }
 
-    // visual component representing the chessgame board (map to ChessBoard):
+    // visual component representing the chess board (map to ChessBoard):
     private class ChessBoardPanel extends JPanel {
         final List<ChessTilePanel> tiles; // all the 64 tiles
 
         ChessBoardPanel() {
-            super(new GridLayout(8, 8)); // 8 x 8 chessgame board
+            super(new GridLayout(8, 8)); // 8 x 8 chess board
             this.tiles = new ArrayList<>();
             // adding each individual ChessTilePanel to a case of ChessBoardPanel and keep track of each individual tile:
             for(int i = 0; i < 64; i++) {
@@ -104,10 +105,10 @@ public class Table {
             validate();
         }
 
-        // displayBoard() displays the new chessgame board on the main frame.
+        // displayBoard() displays the new chess board on the main frame.
         public void displayBoard(final ChessBoard board) {
             removeAll(); // clear frame first
-            // displays each individual chessgame tiles on the new board (on main frame):
+            // displays each individual chess tiles on the new board (on main frame):
             for(final ChessTilePanel tile : boardOrientation.orientedTiles(tiles)) {
                 tile.displayTile(board);
                 add(tile);
@@ -117,7 +118,7 @@ public class Table {
         }
     }
 
-    // visual component representing the chessgame tiles (map to ChessTile):
+    // visual component representing the chess tiles (map to ChessTile):
     private class ChessTilePanel extends JPanel {
         private final int tileIndex;
 
@@ -152,11 +153,11 @@ public class Table {
                             final Move move = Move.MoveCreator.createMove(chessBoard, currentTile.getTileCoordinates(),
                                     destTile.getTileCoordinates());
                             // MoveUpdate updates the current board by creating a new board after executing the move:
-                            final MoveUpdate moveUpdate = chessBoard.getCurrentMovingPlayer().makeMove(move);
+                            final BoardUpdate boardUpdate = chessBoard.getCurrentMovingPlayer().makeMove(move);
                             // After the move is completed, assign the new chessgame board (after executing the move) to
                             //  the Table's chessBoard:
-                            if(moveUpdate.getMoveStatus().isCompleted()) {
-                                chessBoard = moveUpdate.getUpdatedBoard();
+                            if(boardUpdate.getMoveStatus().isCompleted()) {
+                                chessBoard = boardUpdate.getUpdatedBoard();
                                 moveHistory.addMove(move);
                             }
                             // Clear everything back to initial state once again:
@@ -164,7 +165,7 @@ public class Table {
                             destTile = null;
                             onClickMovedPiece = null;
                         }
-                        // Display the new chessgame board:
+                        // Display the new chess board:
                         SwingUtilities.invokeLater(() -> {
                             boardPanel.displayBoard(chessBoard);
                             capturedPiecesPanel.redraw(moveHistory);
@@ -201,11 +202,20 @@ public class Table {
             validate();
         }
 
-        // assignTileColor() gives a color (black or white) to an individual chessgame tile panel.
+        // assignTileColor() gives a color (black or white) to an individual chess tile panel.
         private void assignTileColor() {
+            // if either player is in Check and their King is on the current tile, then color the current tile in red
+            if(chessBoard.getBlackPlayer().isCheck() &&
+                    chessBoard.getBlackPlayer().getKing().getPiecePosition() == this.tileIndex) {
+                setBackground(redColor);
+            }
+            else if(chessBoard.getWhitePlayer().isCheck() &&
+                    chessBoard.getWhitePlayer().getKing().getPiecePosition() == this.tileIndex) {
+                setBackground(redColor);
+            }
             // Row No 1, 3, 5, 7 has a white case if the index is even and black case if the index if odd.
             // ie. It follows the white, black, white, black, ... pattern.
-            if(ChessBoard.FIRST_ROW[this.tileIndex] || ChessBoard.THIRD_ROW[this.tileIndex] ||
+            else if(ChessBoard.FIRST_ROW[this.tileIndex] || ChessBoard.THIRD_ROW[this.tileIndex] ||
                     ChessBoard.FIFTH_ROW[this.tileIndex] || ChessBoard.SEVENTH_ROW[this.tileIndex]) {
                 // if even, white:
                 if(this.tileIndex % 2 == 0) {
@@ -230,12 +240,12 @@ public class Table {
                 }
             }
         }
-        // assignChessPiece(board) assigns each chessgame piece on the current board to the chessgame board JPanel
+        // assignChessPiece(board) assigns each chess piece on the current board to the chess board JPanel
         //  (to draw and display it).
         private void assignChessPiece(final ChessBoard board) {
             // We have to remove all the tiles drawn on the current board JPanel first to redraw the new board panel.
             this.removeAll();
-            // putting each piece image on the chessgame board panel on each individual chessgame tile panel:
+            // putting each piece image on the chess board panel on each individual chess tile panel:
             if(board.getTile(this.tileIndex).isTileOccupied()) {
                 try {
                     // this is just the image name convention in the directory:
@@ -249,10 +259,10 @@ public class Table {
                 }
             }
         }
-        // displayTile() displays the new chessgame tile on the chessgame board on the main frame.
+        // displayTile() displays the new chess tile on the chess board on the main frame.
         public void displayTile(final ChessBoard board) {
             assignTileColor(); // paint tile
-            assignChessPiece(board); // put pieces on corresponding tiles on the current chessgame board
+            assignChessPiece(board); // put pieces on corresponding tiles on the current chess board
             highlightLegalTiles(board);
             validate();
             repaint();
@@ -307,7 +317,7 @@ public class Table {
         }
     }
 
-    // the orientation of the chessgame board, whether on the white side or the black side
+    // the orientation of the chess board, whether on the white side or the black side
     public enum BoardOrientation {
         WHITESIDE {
             @Override

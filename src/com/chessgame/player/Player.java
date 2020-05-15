@@ -1,8 +1,8 @@
 package com.chessgame.player;
 
 import com.chessgame.board.ChessBoard;
-import com.chessgame.board.Move;
-import com.chessgame.board.MoveUpdate;
+import com.chessgame.movement.Move;
+import com.chessgame.movement.BoardUpdate;
 import com.chessgame.pieces.ChessPiece;
 import com.chessgame.pieces.King;
 import com.google.common.collect.ImmutableList;
@@ -81,13 +81,18 @@ public abstract class Player {
         return !this.isInCheck && !hasEscapeMove();
     }
 
+    // isCastled() checks if the current player has used his castling move.
+    public boolean isCastled() { //TODO complete implementation
+        return false;
+    }
+
     // hasEscapeMove() checks if the current player has an escape move.
     protected boolean hasEscapeMove() {
         // We verify individually each move in all the potential legal moves, and if there exists a move that is
         //  updatable (can be completed), then the player has a possible escape move:
         for (final Move move : this.legalMoves) {
             // imaginary move to verify if it can be completed:
-            final MoveUpdate verificationTransition = makeMove(move);
+            final BoardUpdate verificationTransition = makeMove(move);
             if(verificationTransition.getMoveStatus().isCompleted()) {
                 return true;
             }
@@ -95,39 +100,33 @@ public abstract class Player {
         return false;
     }
 
-    // TODO isCastled() function implementation:
-    // isCastled() checks if the player has used his castling move.
-    public boolean isCastled() {
-        return false;
-    }
-
-    // makeMove(move) makes a move on the chessgame board (updated the current ChessBoard with a new ChessBoard with the
+    // makeMove(move) makes a move on the chess board (updated the current ChessBoard with a new ChessBoard with the
     //  move already executed using the MoveUpdate class).
-    public MoveUpdate makeMove(final Move move) {
+    public BoardUpdate makeMove(final Move move) {
         // if the move is not a legal move, then "update" its status to ILLEGAL_MOVE and the move is not executed.
         if (!isLegalMove(move)){
-            return new MoveUpdate(this.board, Move.MoveStatus.ILLEGAL_MOVE);
+            return new BoardUpdate(this.board, Move.MoveStatus.ILLEGAL_MOVE);
         }
         // POTENTIAL UPDATED new ChessBoard after making the move:
         final ChessBoard updateBoard = move.executeMove();
-        // all the enemy attacks on the current player's King on the CURRENT chessgame board:
+        // all the enemy attacks on the current player's King on the CURRENT chess board:
         final Collection<Move> attacksOnKing =
                 Player.attackOnTile(updateBoard.getCurrentMovingPlayer().getOpponent().getKing().getPiecePosition(),
                         updateBoard.getCurrentMovingPlayer().getLegalMoves());
         // if there is at least one attack on the current player's King, then the current player is in Check and the
         //  move is not executed:
         if(!attacksOnKing.isEmpty()) {
-            return new MoveUpdate(this.board, Move.MoveStatus.IN_CHECK);
+            return new BoardUpdate(this.board, Move.MoveStatus.IN_CHECK);
         }
         // otherwise, the current ChessBoard is updated to the new ChessBoard with the move COMPLETED and executed on
         //  the current ChessBoard:
-        return new MoveUpdate(updateBoard, Move.MoveStatus.COMPLETED);
+        return new BoardUpdate(updateBoard, Move.MoveStatus.COMPLETED);
     }
 
     // calculateCastlingMoves() calculates all the castling moves available for the current player on the board.
     protected abstract Collection<Move> calculateCastlingMoves(Collection<Move> legalMoves, Collection<Move> opponentLegalMoves);
 
-    // getActivePieces() returns all the current active pieces on the chessgame board for this player.
+    // getActivePieces() returns all the current active pieces on the chess board for this player.
     public abstract Collection<ChessPiece> getActivePieces();
 
     // getTeam() returns the team of the current player.

@@ -1,5 +1,6 @@
 package com.chessgame.board;
 
+import com.chessgame.movement.Move;
 import com.chessgame.player.Team;
 import com.chessgame.pieces.*;
 import com.chessgame.player.BlackPlayer;
@@ -64,12 +65,12 @@ public class ChessBoard {
         return this.whitePieces;
     }
 
-    // getWhitePlayer() returns the white player in the chessgame game.
+    // getWhitePlayer() returns the white player in the chess game.
     public Player getWhitePlayer() {
         return this.whitePlayer;
     }
 
-    // getBlackPlayer() returns the black player in the chessgame game.
+    // getBlackPlayer() returns the black player in the chess game.
     public Player getBlackPlayer() {
         return this.blackPlayer;
     }
@@ -89,7 +90,7 @@ public class ChessBoard {
         return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
     }
 
-    // isValidTileCoordinate(coordinate) checks if the parameter coordinate is a valid chessgame board coordinate.
+    // isValidTileCoordinate(coordinate) checks if the parameter coordinate is a valid chess board coordinate.
     public static boolean isValidTileCoordinate(final int coordinate) {
         // Tile coordinates (indexes) goes from 0 to 63, with a total of 64 tiles
         return coordinate >= 0 && coordinate <= 63;
@@ -106,7 +107,7 @@ public class ChessBoard {
         return board;
     }
 
-    // createRow(rowIndex) sets a specific starting index of a row in the chessgame board and all tiles in that row are all
+    // createRow(rowIndex) sets a specific starting index of a row in the chess board and all tiles in that row are all
     //  set to true, the rest of tiles are all false.
     private static boolean[] createRow(int rowIndex) {
         final boolean[] board = new boolean[TOTAL_TILES];
@@ -128,10 +129,10 @@ public class ChessBoard {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    // onBoardPieces(curBoard, team) returns all the current chessgame pieces present on the chessgame board owned by the
+    // onBoardPieces(curBoard, team) returns all the current chess pieces present on the chess board owned by the
     //  selected team.
     private static Collection<ChessPiece> onBoardPieces(final List<ChessTile> curBoard, final Team team) {
-        final List<ChessPiece> pieces = new ArrayList<>(); // current pieces on the chessgame board of the selected team
+        final List<ChessPiece> pieces = new ArrayList<>(); // current pieces on the chess board of the selected team
         // checking all the tiles:
         for (final ChessTile tile : curBoard) {
             if(tile.isTileOccupied()) {
@@ -145,7 +146,7 @@ public class ChessBoard {
         return ImmutableList.copyOf(pieces);
     }
 
-    // createBoard() creates a new chessgame board with 64 tiles (list of 64 tiles).
+    // createBoard() creates a new chess board with 64 tiles (list of 64 tiles).
     private static List<ChessTile> createBoard(final Builder builder) {
         final ChessTile[] tiles = new ChessTile[TOTAL_TILES];
         // process of creating all tiles of the current state of game:
@@ -157,7 +158,7 @@ public class ChessBoard {
         return ImmutableList.copyOf(tiles);
     }
 
-    // gameInitialize() creates a new initialized chessgame board (game reset status) with 64 tiles with white team moving
+    // gameInitialize() creates a new initialized chess board (game reset status) with 64 tiles with white team moving
     //  first.
     public static ChessBoard gameInitialize() {
         final Builder builder = new Builder();
@@ -200,9 +201,9 @@ public class ChessBoard {
         return builder.build();
     }
 
-    // A chessgame board object builder:
+    // A chess board object builder:
     public static class Builder {
-        Map<Integer, ChessPiece> piecesPosition; // all chessgame pieces coordinate on the current board
+        Map<Integer, ChessPiece> piecesPosition; // all chess pieces coordinate on the current board
         Team nextMover; // next moving team
         Pawn enPassantPawn;
 
@@ -213,7 +214,7 @@ public class ChessBoard {
         public ChessBoard build() {
             return new ChessBoard(this);
         }
-        // putPiece(piece) puts a piece on the chessgame board.
+        // putPiece(piece) puts a piece on the chess board.
         public void putPiece(final ChessPiece piece) {
             this.piecesPosition.put(piece.getPiecePosition(), piece);
         }

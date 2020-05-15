@@ -65,10 +65,10 @@ public enum Team {
             return ChessBoard.LAST_ROW[coordinate];
         }
     };
-    // getDirection() returns the direction in which the chessgame pieces of each team should move.
+    // getDirection() returns the direction in which the chess pieces of each team should move.
     public abstract int getDirection();
 
-    // getOppositeDirection() returns the enemy's direction in which the chessgame pieces of the enemy team should move.
+    // getOppositeDirection() returns the enemy's direction in which the chess pieces of the enemy team should move.
     public abstract int getEnemyDirection();
 
     // isWhite() checks if the piece is in the white team.

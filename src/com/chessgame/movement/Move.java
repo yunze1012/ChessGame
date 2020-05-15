@@ -1,5 +1,6 @@
-package com.chessgame.board;
+package com.chessgame.movement;
 
+import com.chessgame.board.ChessBoard;
 import com.chessgame.pieces.ChessPiece;
 import com.chessgame.pieces.Pawn;
 import com.chessgame.pieces.Rook;
@@ -105,7 +106,7 @@ public abstract class Move {
 
     // This subclass defines a killing move (piece removal).
     public static class killerMove extends Move {
-        final ChessPiece targetedPiece; // the enemy chessgame piece that is being attacked by our current piece
+        final ChessPiece targetedPiece; // the enemy chess piece that is being attacked by our current piece
 
         public killerMove(final ChessBoard board, final ChessPiece piece, final int destCrd, final ChessPiece target) {
             super(board, piece, destCrd);
@@ -359,7 +360,7 @@ public abstract class Move {
         }
     }
 
-    // This subclass defines an invalid move on a chessgame board.
+    // This subclass defines an invalid move on a chess board.
     public static final class InvalidMove extends Move {
 
         public InvalidMove() {
@@ -379,7 +380,7 @@ public abstract class Move {
             throw new RuntimeException("ERROR: Not instantiable");
         }
 
-        // createMove() returns a legal move given a chessgame board with the same starting coordinate (curCrd) and ending
+        // createMove() returns a legal move given a chess board with the same starting coordinate (curCrd) and ending
         //  coordinate (destCrd).
         public static Move createMove(final ChessBoard board, final int curCrd, final int destCrd) {
             // checks in all the possible legal moves for both players if there is a move with the same starting and

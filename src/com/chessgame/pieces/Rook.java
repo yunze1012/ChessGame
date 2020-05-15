@@ -3,17 +3,17 @@ package com.chessgame.pieces;
 import com.chessgame.player.Team;
 import com.chessgame.board.ChessBoard;
 import com.chessgame.board.ChessTile;
-import com.chessgame.board.Move;
+import com.chessgame.movement.Move;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.chessgame.board.Move.*;
+import static com.chessgame.movement.Move.*;
 
 public class Rook extends ChessPiece{
-    // all possible move coordinate adjustments relative to the current Rook piece coordinate on the chessgame board:
+    // all possible move coordinate adjustments relative to the current Rook piece coordinate on the chess board:
     private final static int[] POSSIBLE_MOVE_REL_CRD = {-8, -1, 1, 8};
     // constructor when it is the piece's first move:
     public Rook(final int posn, final Team team) {
@@ -59,13 +59,13 @@ public class Rook extends ChessPiece{
     }
 
     // isOnFirstColumnValid(curPosition, movePosition) checks if the parameter current position is on the first column
-    //  of the chessgame board and if the parameter movement position is invalid because of the first column.
+    //  of the chess board and if the parameter movement position is invalid because of the first column.
     private static boolean isOnFirstColumnInvalid (final int curPosition, final int movePosition) {
         return ChessBoard.FIRST_COLUMN[curPosition] && (movePosition == -1);
     }
 
     // isOnLastColumnValid(curPosition, movePosition) checks if the parameter current position is on the last column
-    //  of the chessgame board and if the parameter movement position is invalid because of the last column.
+    //  of the chess board and if the parameter movement position is invalid because of the last column.
     private static boolean isOnLastColumnInvalid (final int curPosition, final int movePosition) {
         return ChessBoard.LAST_COLUMN[curPosition] && (movePosition == 1);
     }
@@ -79,6 +79,7 @@ public class Rook extends ChessPiece{
     // for general function purpose, see ChessPiece class file.
     @Override
     public Rook movePiece(final Move move) {
-        return new Rook(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam());
+        // NOTE: If you move the piece, then it is no longer the piece's first move.
+        return new Rook(move.getDestinationCrd(), move.getMovingPiece().getPieceTeam(), false);
     }
 }
