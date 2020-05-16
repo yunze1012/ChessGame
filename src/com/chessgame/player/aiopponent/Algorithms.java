@@ -5,5 +5,5 @@ import com.chessgame.movement.Move;
 
 public interface Algorithms {
 
-    Move runAlgorithm(ChessBoard board, int treeLevel);
+    Move runAlgorithm(ChessBoard board);
 }

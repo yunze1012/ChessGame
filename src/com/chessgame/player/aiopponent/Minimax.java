@@ -6,19 +6,21 @@ import com.chessgame.movement.BoardUpdate;
 
 public class Minimax implements Algorithms{
     private final BoardScore boardScore;
+    private final int treeLevel;
 
-    public Minimax() {
-        this.boardScore = new InitialBoardScore();
+    public Minimax(final int treeLevel) {
+        this.boardScore = new EvaluateBoardScore();
+        this.treeLevel = treeLevel;
     }
 
     @Override
-    public Move runAlgorithm(ChessBoard board, int treeLevel) {
+    public Move runAlgorithm(ChessBoard board) {
         final long startTime = System.currentTimeMillis(); // to take account how long to execute a move
         Move bestMove = null;
         int currentHighestValue = Integer.MIN_VALUE;
         int currentLowestValue = Integer.MAX_VALUE;
         int currentValue;
-        System.out.println(board.getCurrentMovingPlayer() + " THINKING WITH TREE LEVEL = " + treeLevel); // DEBUG PURPOSE
+        System.out.println(board.getCurrentMovingPlayer() + " THINKING WITH TREE LEVEL = " + this.treeLevel); // DEBUG PURPOSE
         // number of moves available for current player:
         int currentPlayerNumMoves = board.getCurrentMovingPlayer().getLegalMoves().size();
         // check all current player's possible legal moves:
@@ -31,12 +33,12 @@ public class Minimax implements Algorithms{
                 if(board.getCurrentMovingPlayer().getTeam().isWhite()) {
                     // then for the AI's next move, you will try to minimize the value so BLACK team (AI) can win
                     //  since a negative score means AI opponent is winning:
-                    currentValue = minValue(update.getUpdatedBoard(), treeLevel - 1);
+                    currentValue = minValue(update.getUpdatedBoard(), this.treeLevel - 1);
                 }
                 // if it is currently the Black player moving (AI moving):
                 else {
                     // then just do the opposite for the White player:
-                    currentValue = maxValue(update.getUpdatedBoard(), treeLevel - 1);
+                    currentValue = maxValue(update.getUpdatedBoard(), this.treeLevel - 1);
                 }
                 // update highest current value and best move if white is playing and current value is bigger than
                 //  previous highest value (it means that white has the best move right now):
@@ -66,7 +68,7 @@ public class Minimax implements Algorithms{
     // minValue() returns the minimum value on the specified tree level.
     public int minValue(final ChessBoard board, final int treeLevel) {
         // TO STOP THE MINIMIZING PROCESS:
-        if(treeLevel == 0) {
+        if(treeLevel == 0 || isGameOver(board)) {
             return this.boardScore.score(board, treeLevel);
         }
         int currentLowestValue = Integer.MAX_VALUE; // current seen lowest value in this level
@@ -86,10 +88,10 @@ public class Minimax implements Algorithms{
         return currentLowestValue;
     }
 
-    //maxValue() returns the maximum value on the specified tree level.
+    // maxValue() returns the maximum value on the specified tree level.
     public int maxValue(final ChessBoard board, final int treeLevel) {
         // TO STOP THE MAXIMIZING PROCESS:
-        if(treeLevel == 0) {
+        if(treeLevel == 0 || isGameOver(board)) {
             return this.boardScore.score(board, treeLevel);
         }
         int currentHighestValue = Integer.MIN_VALUE; // current seen lowest value in this level
@@ -107,5 +109,10 @@ public class Minimax implements Algorithms{
             }
         }
         return currentHighestValue;
+    }
+
+    // isGameOver(board) checks if the current chess board is game over (check mate or tie).
+    private static boolean isGameOver(final ChessBoard board) {
+        return board.getCurrentMovingPlayer().isCheckMate() || board.getCurrentMovingPlayer().isStaleMate();
     }
 }
