@@ -10,6 +10,6 @@ public class GameDrive {
         ChessBoard board = ChessBoard.gameInitialize();
         System.out.println(board);
 
-        Table table = new Table();
+        Table.get().display();
     }
 }

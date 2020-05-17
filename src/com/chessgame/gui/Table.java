@@ -5,25 +5,30 @@ import com.chessgame.board.ChessTile;
 import com.chessgame.movement.Move;
 import com.chessgame.pieces.ChessPiece;
 import com.chessgame.movement.BoardUpdate;
+import com.chessgame.player.aiopponent.Algorithms;
+import com.chessgame.player.aiopponent.Minimax;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
-public class Table {
+public class Table extends Observable {
+    private final JFrame mainFrame;
     private final ChessBoardPanel boardPanel;
     private final CapturedPieces capturedPiecesPanel;
     private ChessBoard chessBoard;
@@ -39,10 +44,13 @@ public class Table {
     private ChessPiece onClickMovedPiece;
     private BoardOrientation boardOrientation;
     private final MoveHistory moveHistory;
+    private static final Table INSTANCE = new Table();
+    private final Setup setup;
+    private Move aiMove;
 
-    public Table() {
-        JFrame mainFrame = new JFrame("Chess");
-        mainFrame.setLayout(new BorderLayout());
+    private Table() {
+        this.mainFrame = new JFrame("Chess");
+        this.mainFrame.setLayout(new BorderLayout());
         this.chessBoard = ChessBoard.gameInitialize();
         this.boardOrientation = BoardOrientation.WHITESIDE;
         final JMenuBar tableMenu = generateOptionsBar();
@@ -51,9 +59,33 @@ public class Table {
         this.capturedPiecesPanel = new CapturedPieces();
         this.boardPanel = new ChessBoardPanel();
         this.moveHistory = new MoveHistory();
+        this.addObserver(new AIObserver());
+        this.setup = new Setup(this.mainFrame, true);
         mainFrame.add(this.boardPanel, BorderLayout.CENTER);
         mainFrame.add(this.capturedPiecesPanel, BorderLayout.WEST);
         mainFrame.setVisible(true);
+    }
+
+    // display() displays all the GUI components with the main frame for the first time.
+    public void display() {
+        Table.get().getMoveHistory().clear();
+        Table.get().getCapturedPiecesPanel().redraw(Table.get().getMoveHistory());
+        Table.get().getBoardPanel().displayBoard(Table.get().getChessBoard());
+    }
+
+    // get() returns the current instance table.
+    public static Table get() {
+        return INSTANCE;
+    }
+
+    // getSetup() returns the current setup.
+    private Setup getSetup() {
+        return this.setup;
+    }
+
+    // getChessBoard() returns the current chess board.
+    private ChessBoard getChessBoard() {
+        return this.chessBoard;
     }
 
     // generateOptionsBar() creates and returns the options bar at the top of the main frame.
@@ -61,6 +93,7 @@ public class Table {
         final JMenuBar tableMenu = new JMenuBar();
         tableMenu.add(createFileMenu());
         tableMenu.add(createCustomizeMenu());
+        tableMenu.add(createOptionsMenu());
         return tableMenu;
     }
     // createFileMenu() creates and returns the File menu option inside the options bar.
@@ -86,6 +119,112 @@ public class Table {
         });
         customizeMenu.add(changeSideMenuItem);
         return customizeMenu;
+    }
+
+    private static class AIObserver implements Observer {
+
+        @Override
+        public void update(final Observable o, final Object arg) {
+            // if the current player is an AI player and the current player is not in checkmate or stalemate
+            if(Table.get().getSetup().isAIPlayer(Table.get().getChessBoard().getCurrentMovingPlayer()) &&
+               !Table.get().getChessBoard().getCurrentMovingPlayer().isCheckMate() &&
+                    !Table.get().getChessBoard().getCurrentMovingPlayer().isStaleMate()) {
+                final AIRunner aiLibrary = new AIRunner();
+                aiLibrary.execute();
+            }
+            // if current player is in check mate:
+            else if(Table.get().getChessBoard().getCurrentMovingPlayer().isCheckMate()) {
+                System.out.println("game over, checkmate");
+            }
+            // if current player is in stale mate:
+            else if(Table.get().getChessBoard().getCurrentMovingPlayer().isStaleMate()) {
+                System.out.println("game over, tie");
+            }
+        }
+    }
+
+    private static class AIRunner extends SwingWorker<Move, String> {
+
+        private AIRunner() {
+
+        }
+
+        // running algorithm in background:
+        @Override
+        protected Move doInBackground() throws Exception {
+            final Algorithms minimax = new Minimax(4);
+            final Move bestMove = minimax.runAlgorithm(Table.get().getChessBoard()); // best AI move
+             return bestMove;
+        }
+        // update GUI components after AI move is executed:
+        @Override
+        public void done() {
+            try {
+                final Move bestMove = get();
+                Table.get().updateAIMove(bestMove);
+                Table.get().updateChessBoard(Table.get().getChessBoard().getCurrentMovingPlayer().makeMove(bestMove).getUpdatedBoard());
+                Table.get().getMoveHistory().addMove(bestMove);
+                Table.get().getCapturedPiecesPanel().redraw(Table.get().getMoveHistory());
+                Table.get().getBoardPanel().displayBoard(Table.get().getChessBoard());
+                Table.get().moveMadeUpdate(PlayerType.AI);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // updateChessBoard() updates the current chess board with the new chess board after making the move.
+    public void updateChessBoard(final ChessBoard board) {
+        this.chessBoard = board;
+    }
+
+    // updateAIMove() updates the current AI move with the new AI move decision.
+    public void updateAIMove(final Move move) {
+        this.aiMove = move;
+    }
+
+    // getMoveHistory() returns the current move history.
+    private MoveHistory getMoveHistory() {
+        return this.moveHistory;
+    }
+
+    // getCapturedPiecesPanel() returns the current captured pieces panel.
+    private CapturedPieces getCapturedPiecesPanel() {
+        return this.capturedPiecesPanel;
+    }
+
+    // getBoardPanel() returns the current chess board panel AI component.
+    private ChessBoardPanel getBoardPanel() {
+        return this.boardPanel;
+    }
+
+    // moveMadeUpdate(playerType) notifies the observer after the given playertype has made a move.
+    private void moveMadeUpdate(final PlayerType playerType) {
+        setChanged();
+        notifyObservers(playerType);
+    }
+
+    // setupUpdate(setup) updates any change of the observable to the setup.
+    private void setupUpdate(final Setup setup) {
+        setChanged();
+        notifyObservers(setup);
+    }
+
+    // createOptionsMenu() creates and returns the Options menu option inside the options bar.
+    private JMenu createOptionsMenu() {
+        final JMenu optionsMenu = new JMenu("Options");
+        final JMenuItem setupMenuItem = new JMenuItem("Setup");
+        setupMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Table.get().getSetup().promptUser();
+                Table.get().setupUpdate(Table.get().getSetup());
+            }
+        });
+        optionsMenu.add(setupMenuItem);
+        return optionsMenu;
     }
 
     // visual component representing the chess board (map to ChessBoard):
@@ -168,6 +307,10 @@ public class Table {
                         // Display the new chess board:
                         SwingUtilities.invokeLater(() -> {
                             boardPanel.displayBoard(chessBoard);
+                            // if the current player is an AI:
+                            if(setup.isAIPlayer(chessBoard.getCurrentMovingPlayer())) {
+                                Table.get().moveMadeUpdate(PlayerType.HUMAN);
+                            }
                             capturedPiecesPanel.redraw(moveHistory);
                         });
                     }
@@ -315,6 +458,10 @@ public class Table {
         public void addMove(final Move move) {
             this.moves.add(move);
         }
+        // clear() clears the move history.
+        public void clear() {
+            this.moves.clear();
+        }
     }
 
     // the orientation of the chess board, whether on the white side or the black side
@@ -346,5 +493,10 @@ public class Table {
         abstract List<ChessTilePanel> orientedTiles(final List<ChessTilePanel> tiles);
         // flip() returns the flipped orientation of the board.
         abstract BoardOrientation flip();
+    }
+
+    enum PlayerType {
+        HUMAN,
+        AI
     }
 }
