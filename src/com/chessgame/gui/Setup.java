@@ -5,8 +5,6 @@ import com.chessgame.player.Team;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Setup extends JDialog {
     private Table.PlayerType whitePlayerType;
@@ -48,19 +46,15 @@ public class Setup extends JDialog {
         final JButton cancelButton = new JButton("Cancel");
         final JButton okButton = new JButton("OK");
 
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                whitePlayerType = whiteComputerButton.isSelected() ? Table.PlayerType.AI : Table.PlayerType.HUMAN;
-                blackPlayerType = blackComputerButton.isSelected() ? Table.PlayerType.AI : Table.PlayerType.HUMAN;
-                Setup.this.setVisible(false);
-            }
+        okButton.addActionListener(e -> {
+            whitePlayerType = whiteComputerButton.isSelected() ? Table.PlayerType.AI : Table.PlayerType.HUMAN;
+            blackPlayerType = blackComputerButton.isSelected() ? Table.PlayerType.AI : Table.PlayerType.HUMAN;
+            Setup.this.setVisible(false);
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Cancel");
-                Setup.this.setVisible(false);
-            }
+        cancelButton.addActionListener(e -> {
+            System.out.println("Cancel");
+            Setup.this.setVisible(false);
         });
 
         myPanel.add(cancelButton);

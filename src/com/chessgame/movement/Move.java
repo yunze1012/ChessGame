@@ -297,6 +297,7 @@ public abstract class Move {
             builder.putPiece(this.movingPiece.movePiece(this)); // Moving the king
             // Creating a new Rook at the destination coordinate:
             builder.putPiece(new Rook(this.rookDestCrd, this.rook.getPieceTeam(), false));
+            this.curBoard.getCurrentMovingPlayer().castled(); // change hasCastled status to true
             builder.setMover(this.curBoard.getCurrentMovingPlayer().getOpponent().getTeam());
             return builder.build();
         }

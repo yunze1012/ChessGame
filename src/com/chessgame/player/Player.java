@@ -17,6 +17,7 @@ public abstract class Player {
     protected final King king;
     protected final Collection<Move> legalMoves;
     private final boolean isInCheck;
+    private boolean hasCastled;
 
     public Player (final ChessBoard board, final Collection<Move> myMoves, final Collection<Move> opponentMoves) {
         this.board = board;
@@ -25,6 +26,7 @@ public abstract class Player {
         this.legalMoves = ImmutableList.copyOf(Iterables.concat(myMoves, calculateCastlingMoves(myMoves, opponentMoves)));
         // if there is a possible attack on the tile where the King is, then the player is in Check.
         this.isInCheck = !Player.attackOnTile(this.king.getPiecePosition(), opponentMoves).isEmpty();
+        this.hasCastled = false;
     }
 
     // attackOnTile() returns all the possible attack moves on the selected tile.
@@ -81,9 +83,14 @@ public abstract class Player {
         return !this.isInCheck && !hasEscapeMove();
     }
 
+    // castled() changes hasCastled to true when executing the castling move.
+    public void castled() {
+        this.hasCastled = true;
+    }
+
     // isCastled() checks if the current player has used his castling move.
     public boolean isCastled() { //TODO complete implementation
-        return false;
+        return this.hasCastled;
     }
 
     // hasEscapeMove() checks if the current player has an escape move.
