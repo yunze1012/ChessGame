@@ -1,7 +1,6 @@
 package com.chessgame.movement;
 
 import com.chessgame.board.ChessBoard;
-import com.chessgame.movement.Move;
 
 public class BoardUpdate {
     private final ChessBoard updatedBoard;

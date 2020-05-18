@@ -16,13 +16,13 @@ public class EvaluateBoardScore implements BoardScore {
         //  but if the score is negative, then BLACK player is currently winning (black player's score > white player's score)
         //  as defined in BoardScore interface. And if (white player's score == black player's score), then the difference
         //  is null so the score is neutral, which means that the game is currently equal.
-        return playerScore(board, board.getWhitePlayer(), treeLevel) -
-                playerScore(board, board.getBlackPlayer(), treeLevel);
+        return playerScore(board.getWhitePlayer(), treeLevel) -
+                playerScore(board.getBlackPlayer(), treeLevel);
     }
 
     // playerScore(board, player, treeLevel) returns the current player's score on the given tree level with the chess
     //  board.
-    private int playerScore(final ChessBoard board, final Player player, final int treeLevel) {
+    private int playerScore(final Player player, final int treeLevel) {
         return piecesPoints(player) + playerMoveOptions(player) + opponentCheckStatus(player) +
                 opponentCheckMateStatus(player, treeLevel) + hasCastledScore(player);
     }

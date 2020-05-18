@@ -15,14 +15,11 @@ public class Minimax implements Algorithms{
 
     @Override
     public Move runAlgorithm(ChessBoard board) {
-        final long startTime = System.currentTimeMillis(); // to take account how long to execute a move
         Move bestMove = null;
         int currentHighestValue = Integer.MIN_VALUE;
         int currentLowestValue = Integer.MAX_VALUE;
         int currentValue;
         System.out.println(board.getCurrentMovingPlayer() + " THINKING WITH TREE LEVEL = " + this.treeLevel); // DEBUG PURPOSE
-        // number of moves available for current player:
-        int currentPlayerNumMoves = board.getCurrentMovingPlayer().getLegalMoves().size();
         // check all current player's possible legal moves:
         for(final Move move : board.getCurrentMovingPlayer().getLegalMoves()) {
             // We want to apply the algorithm to the next board after the current player has moved:
@@ -54,7 +51,6 @@ public class Minimax implements Algorithms{
                 }
             }
         }
-        final long elapsedTime = System.currentTimeMillis() - startTime; // time for algorithm execution
         return bestMove;
     }
 
