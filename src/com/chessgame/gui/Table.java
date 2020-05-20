@@ -383,7 +383,7 @@ public class Table extends Observable {
                     final BufferedImage image =
                             ImageIO.read(new File(piecesImagesPath +
                                     board.getTile(this.tileIndex).getPiece().getPieceTeam().toString() +
-                                    board.getTile(this.tileIndex).getPiece().toString() + ".jpg"));
+                                    board.getTile(this.tileIndex).getPiece().toString() + ".png"));
                     add(new JLabel(new ImageIcon(image)));
                 } catch (IOException e) {
                     e.printStackTrace();
