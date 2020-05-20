@@ -89,7 +89,7 @@ public abstract class Player {
     }
 
     // isCastled() checks if the current player has used his castling move.
-    public boolean isCastled() { //TODO complete implementation
+    public boolean isCastled() {
         return this.hasCastled;
     }
 
